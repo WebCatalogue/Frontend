@@ -4,7 +4,7 @@ import { Reveal } from "@/components/playground/motion/primitives";
 import { BLOG_CATEGORIES, BLOG_POSTS } from "@/mock/blog";
 
 export const metadata = {
-  title: "Blog — Aurevia",
+  title: "Blog — BhaiKISite",
   description: "Design tips, SEO guides, and insights for local businesses.",
 };
 

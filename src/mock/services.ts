@@ -3,112 +3,138 @@ export interface Service {
   title: string;
   slug: string;
   description: string;
+  longDescription: string;
   features: string[];
+  idealFor: string;
 }
 
 export const SERVICES: Service[] = [
   {
-    id: "business-websites",
-    title: "Business Websites",
-    slug: "business-websites",
+    id: "website-design",
+    title: "Website Design",
+    slug: "website-design",
     description:
-      "Custom-crafted websites that reflect your brand and convert visitors into loyal customers.",
+      "Layouts shaped around how your customers actually decide — not how agencies win awards.",
+    longDescription:
+      "We start with your business, not a template grid. Every page is composed from proven sections — hero, services, gallery, contact — arranged for your industry. You get a site that looks custom because the pieces are chosen for you, not copied from a theme store.",
     features: [
-      "Custom design",
-      "Mobile-first",
-      "CMS-ready structure",
-      "Analytics setup",
+      "Industry-matched layouts",
+      "Mobile-first composition",
+      "Brand-consistent typography",
+      "Accessibility built in",
     ],
+    idealFor: "Businesses launching their first professional site",
   },
   {
-    id: "website-catalogue",
-    title: "Website Catalogue",
-    slug: "website-catalogue",
+    id: "website-development",
+    title: "Website Development",
+    slug: "website-development",
     description:
-      "Industry-specific templates refined into unique, premium experiences for your business.",
+      "Fast, reliable builds on modern technology — no WordPress plugins holding you back.",
+    longDescription:
+      "BhaiKISite runs on Next.js with performance as a default. Pages load quickly, forms work, and your site stays secure without constant plugin updates. We handle the technical foundation so you focus on content.",
     features: [
-      "Industry templates",
-      "Rapid deployment",
-      "Brand customization",
-      "Multi-page sites",
+      "Next.js architecture",
+      "Core Web Vitals optimised",
+      "Form & booking integrations",
+      "Secure hosting guidance",
     ],
+    idealFor: "Owners replacing slow or broken websites",
   },
   {
-    id: "landing-pages",
-    title: "Landing Pages",
-    slug: "landing-pages",
+    id: "website-builder",
+    title: "Website Builder",
+    slug: "website-builder",
     description:
-      "High-converting single-page experiences designed for campaigns, launches, and promotions.",
+      "Compose your own site from premium components — no code, no compromise.",
+    longDescription:
+      "Our builder gives you the same sections we use for agency projects. Pick a template, swap components, adjust your theme, and publish. It's the control of a page builder with the polish of a design studio.",
     features: [
-      "Conversion-focused",
-      "A/B ready layout",
-      "Fast load times",
-      "Lead capture forms",
+      "Drag-and-drop sections",
+      "Live theme preview",
+      "Component catalogue",
+      "One-click publishing",
     ],
+    idealFor: "Hands-on owners who want speed and control",
   },
   {
-    id: "website-redesign",
-    title: "Website Redesign",
-    slug: "website-redesign",
+    id: "template-customization",
+    title: "Template Customization",
+    slug: "template-customization",
     description:
-      "Transform outdated websites into modern, premium digital experiences your customers trust.",
+      "Start from an industry template and refine it until it feels unmistakably yours.",
+    longDescription:
+      "Choose from dozens of industry starters — café, salon, gym, clinic, and more. We adjust colours, fonts, imagery, and copy so the result doesn't look like anyone else's template. Fast turnaround without generic output.",
     features: [
-      "UX audit",
-      "Visual refresh",
-      "Performance boost",
-      "SEO improvements",
+      "40+ industry templates",
+      "Custom colour palettes",
+      "Photography guidance",
+      "Copy refinement",
     ],
+    idealFor: "Businesses that need to launch quickly with quality",
   },
   {
-    id: "branding-support",
-    title: "Branding Support",
-    slug: "branding-support",
+    id: "seo-ready",
+    title: "SEO-Ready Websites",
+    slug: "seo-ready-websites",
     description:
-      "Cohesive visual identity across your website — typography, color, and tone of voice.",
+      "Technical foundations so local customers find you on Google — not page three.",
+    longDescription:
+      "Every BhaiKISite build includes proper meta tags, semantic structure, sitemaps, and schema markup. We set up Google Business Profile alignment and local landing patterns so 'near me' searches actually surface your business.",
     features: [
-      "Color systems",
-      "Typography",
-      "Visual guidelines",
-      "Asset creation",
+      "Meta & Open Graph tags",
+      "Structured data",
+      "Sitemap generation",
+      "Local SEO patterns",
     ],
-  },
-  {
-    id: "seo-foundation",
-    title: "SEO Foundation",
-    slug: "seo-foundation",
-    description:
-      "Technical SEO and on-page optimization so local customers find you first.",
-    features: [
-      "Meta optimization",
-      "Schema markup",
-      "Sitemap setup",
-      "Local SEO",
-    ],
+    idealFor: "Shops, clinics, and restaurants competing locally",
   },
   {
     id: "performance",
     title: "Performance Optimization",
     slug: "performance-optimization",
     description:
-      "Lightning-fast load times that improve rankings, conversions, and user experience.",
+      "Sites that load in under two seconds — because slow pages lose customers.",
+    longDescription:
+      "We compress images intelligently, lazy-load below-the-fold content, and eliminate render-blocking resources. Your Lighthouse scores improve, your bounce rate drops, and Google ranks you higher.",
     features: [
-      "Core Web Vitals",
-      "Image optimization",
+      "Image optimisation",
+      "Lazy loading",
       "Code splitting",
-      "CDN setup",
+      "CDN recommendations",
     ],
+    idealFor: "Sites with high traffic or image-heavy galleries",
+  },
+  {
+    id: "hosting",
+    title: "Hosting Guidance",
+    slug: "hosting-guidance",
+    description:
+      "Clear recommendations on where to host — without upselling you infrastructure you don't need.",
+    longDescription:
+      "We advise on Vercel, Cloudflare, and regional providers based on your traffic and budget. Domain setup, SSL, and DNS are handled with documentation you can hand to any IT person.",
+    features: [
+      "Provider comparison",
+      "Domain & SSL setup",
+      "DNS configuration",
+      "Uptime monitoring tips",
+    ],
+    idealFor: "First-time website owners unsure where to host",
   },
   {
     id: "maintenance",
-    title: "Maintenance Plans",
-    slug: "maintenance-plans",
+    title: "Maintenance & Support",
+    slug: "maintenance",
     description:
-      "Ongoing care, updates, and support so your website stays secure and current.",
+      "Monthly care so your site stays current, secure, and aligned with your business.",
+    longDescription:
+      "Menus change. Hours shift. New photos arrive. Our maintenance plans cover content updates, security patches, and performance checks — so your site never quietly goes stale while you're busy running the shop.",
     features: [
-      "Monthly updates",
-      "Security patches",
-      "Content changes",
+      "Content updates",
+      "Security monitoring",
+      "Monthly health checks",
       "Priority support",
     ],
+    idealFor: "Owners who want a set-and-forget partnership",
   },
 ];

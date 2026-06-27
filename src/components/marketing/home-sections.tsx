@@ -15,10 +15,12 @@ import {
   Button,
 } from "@/components/ui";
 import { APP_TAGLINE, ROUTES } from "@/constants";
-import { HOME_FAQ, PROCESS_STEPS, TESTIMONIALS, WHY_AUREVIA } from "@/mock";
+import { HOME_FAQ, PROCESS_STEPS, TESTIMONIALS, WHY_BHAIKISITE } from "@/mock";
 import { INDUSTRIES } from "@/mock/industries";
 import { PORTFOLIO_PROJECTS } from "@/mock/portfolio";
 import { SERVICES } from "@/mock/services";
+import { DemoImage } from "@/components/marketing/demo-image";
+import { demoImage } from "@/lib/demo-images";
 
 const heroChild = {
   hidden: { opacity: 0, y: 24 },
@@ -34,44 +36,57 @@ export function HomeHero() {
     <section className="section-anchor relative overflow-hidden px-5 pt-28 pb-20 sm:min-h-[calc(100svh-3.5rem)] sm:px-6 sm:pt-32 sm:pb-24 lg:px-12 lg:pt-36">
       <div className="absolute inset-0 bg-[var(--gradient-ambient-base)]" />
       <div className="relative mx-auto max-w-[var(--container-2xl)]">
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-          className="max-w-3xl"
-        >
-          <motion.p
-            variants={heroChild}
-            className="section-eyebrow mb-6 sm:mb-8"
-          >
-            Premium web design studio
-          </motion.p>
-          <motion.h1
-            variants={heroChild}
-            className="type-display-2xl text-foreground"
-          >
-            {APP_TAGLINE}
-          </motion.h1>
-          <motion.p
-            variants={heroChild}
-            className="type-body-lg text-foreground-muted mt-6 max-w-xl sm:mt-8"
-          >
-            We help local businesses establish a premium digital presence
-            through beautifully designed, high-performance websites that win
-            trust before the first conversation.
-          </motion.p>
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <motion.div
-            variants={heroChild}
-            className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center sm:gap-4"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
           >
-            <Button variant="primary" size="lg" asChild>
-              <Link href={ROUTES.contact}>Start your project</Link>
-            </Button>
-            <Button variant="ghost" size="lg" asChild>
-              <Link href={ROUTES.portfolio}>View our work</Link>
-            </Button>
+            <motion.p
+              variants={heroChild}
+              className="section-eyebrow mb-6 sm:mb-8"
+            >
+              Website creation platform
+            </motion.p>
+            <motion.h1
+              variants={heroChild}
+              className="type-display-2xl text-foreground"
+            >
+              {APP_TAGLINE}
+            </motion.h1>
+            <motion.p
+              variants={heroChild}
+              className="type-body-lg text-foreground-muted mt-6 max-w-xl sm:mt-8"
+            >
+              Pick an industry template, customise your theme, and publish a
+              site that looks like you hired a studio — without the six-month
+              wait.
+            </motion.p>
+            <motion.div
+              variants={heroChild}
+              className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center sm:gap-4"
+            >
+              <Button variant="primary" size="lg" asChild>
+                <Link href={ROUTES.industries}>Browse templates</Link>
+              </Button>
+              <Button variant="ghost" size="lg" asChild>
+                <Link href={ROUTES.portfolio}>See our work</Link>
+              </Button>
+            </motion.div>
           </motion.div>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-2xl)] shadow-2xl"
+          >
+            <DemoImage
+              src={demoImage("cafe", 1400)}
+              alt="BhaiKISite template preview"
+              priority
+            />
+          </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -87,23 +102,18 @@ export function HomeIntro() {
             Digital craftsmanship for businesses that care.
           </h2>
           <p className="type-body-lg text-foreground-muted mt-6">
-            Aurevia is a design-led studio focused on one thing: helping local
-            businesses look as good online as they do in person. From cafés to
-            clinics, we build websites that feel handcrafted — not generated.
+            BhaiKISite is a website creation platform — combine premium
+            components, themes, and industry templates to launch a world-class
+            site in minutes. From cafés to clinics, every site feels
+            handcrafted, not generated.
           </p>
         </Reveal>
         <Reveal delay={0.1}>
-          <div className="depth-panel p-8 sm:p-10">
-            <p
-              className="text-foreground text-2xl leading-snug tracking-tight sm:text-3xl"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              &ldquo;Every business deserves a website they&apos;re proud to
-              share.&rdquo;
-            </p>
-            <p className="type-body-sm text-foreground-muted mt-6">
-              — The Aurevia team
-            </p>
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-2xl)]">
+            <DemoImage
+              src={demoImage("teamCollaboration", 1000)}
+              alt="Local business team"
+            />
           </div>
         </Reveal>
       </div>
@@ -117,13 +127,13 @@ export function HomeWhy() {
       <div className="absolute inset-0 bg-[var(--color-background-subtle)]" />
       <div className="relative mx-auto max-w-[var(--container-2xl)]">
         <Reveal>
-          <p className="section-eyebrow mb-6">Why Aurevia</p>
+          <p className="section-eyebrow mb-6">Why BhaiKISite</p>
           <h2 className="type-display-md text-foreground max-w-lg">
             Built different. Built for you.
           </h2>
         </Reveal>
         <div className="mt-12 grid gap-5 sm:mt-16 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-          {WHY_AUREVIA.map((item, i) => (
+          {WHY_BHAIKISITE.map((item, i) => (
             <Reveal key={item.title} delay={i * 0.06}>
               <div className="surface-1 h-full rounded-[var(--radius-xl)] p-6 sm:p-7">
                 <h3 className="type-heading-sm text-foreground">
@@ -165,13 +175,17 @@ export function HomeIndustries() {
           {featured.map((industry, i) => (
             <Reveal key={industry.id} delay={i * 0.05}>
               <Link
-                href={ROUTES.industries}
+                href={`/industries/${industry.slug}`}
                 className="group depth-panel block overflow-hidden transition-transform duration-300 hover:-translate-y-0.5"
               >
-                <div
-                  className="h-28 sm:h-32"
-                  style={{ background: industry.gradient }}
-                />
+                <div className="relative h-28 overflow-hidden sm:h-32">
+                  <DemoImage
+                    src={industry.image}
+                    alt={industry.name}
+                    className="transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, 33vw"
+                  />
+                </div>
                 <div className="p-6">
                   <h3 className="type-heading-sm text-foreground group-hover:text-accent transition-colors">
                     {industry.name}
@@ -215,10 +229,13 @@ export function HomeShowcase() {
                 href={`/portfolio/${project.slug}`}
                 className="group depth-panel block overflow-hidden"
               >
-                <div
-                  className="h-48 sm:h-56"
-                  style={{ background: project.gradient }}
-                />
+                <div className="relative h-48 overflow-hidden sm:h-56">
+                  <DemoImage
+                    src={project.image}
+                    alt={project.title}
+                    className="transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
                 <div className="p-6 sm:p-7">
                   <p className="type-label text-foreground-subtle">
                     {project.industry} · {project.year}

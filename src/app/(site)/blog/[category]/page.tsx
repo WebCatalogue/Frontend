@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: CategoryPageProps) {
   const { category } = await params;
   const cat = BLOG_CATEGORIES.find((c) => c.slug === category);
   return {
-    title: cat ? `${cat.name} — Blog — Aurevia` : "Blog — Aurevia",
+    title: cat ? `${cat.name} — Blog — BhaiKISite` : "Blog — BhaiKISite",
   };
 }
 

@@ -1,9 +1,9 @@
 import { PageHeader, PageSection } from "@/components/layout";
 
 export const metadata = {
-  title: "Privacy Policy — Aurevia",
+  title: "Privacy Policy — BhaiKISite",
   description:
-    "How Aurevia collects, uses, and protects your personal information.",
+    "How BhaiKISite collects, uses, and protects your personal information.",
 };
 
 export default function PrivacyPage() {
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
             },
             {
               title: "Contact",
-              body: "For privacy-related questions, contact us at hello@aurevia.com.",
+              body: "For privacy-related questions, contact us at hello@bhaikisite.com.",
             },
           ].map((section) => (
             <section key={section.title}>

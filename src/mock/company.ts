@@ -1,97 +1,169 @@
-export interface Founder {
-  id: string;
-  name: string;
-  role: string;
-  bio: string;
-  initials: string;
-}
-
-export const FOUNDERS: Founder[] = [
+export const FOUNDERS = [
   {
-    id: "1",
-    name: "Arjun Mehta",
-    role: "Co-Founder & Creative Director",
-    bio: "Former design lead with a passion for helping local businesses compete with world-class digital experiences.",
-    initials: "AM",
+    id: "aarush",
+    name: "Aarush Gupta",
+    role: "Co-Founder · Backend & Platform Engineering",
+    bio: "Aarush architects the BhaiKISite engine — APIs, multi-tenant infrastructure, and the builder backend that powers publishing, sections, and site configuration at scale.",
+    initials: "AG",
   },
   {
-    id: "2",
-    name: "Sneha Patel",
-    role: "Co-Founder & Engineering Lead",
-    bio: "Full-stack engineer obsessed with performance, accessibility, and building technology that serves real businesses.",
-    initials: "SP",
+    id: "garvit",
+    name: "Garvit Siwach",
+    role: "Co-Founder · Product Design & Frontend Engineering",
+    bio: "Garvit shapes how BhaiKISite looks and feels — the design system, component catalogue, composer experience, and every interaction business owners touch.",
+    initials: "GS",
   },
 ];
 
 export const COMPANY_VALUES = [
   {
-    title: "Craft over templates",
+    title: "Clarity over complexity",
     description:
-      "Every website is designed with intention. We don't ship generic layouts — we compose experiences.",
+      "Business owners shouldn't need a developer to change their hours. Every BhaiKISite build is editable, understandable, and honest about what it does.",
   },
   {
-    title: "Local businesses first",
+    title: "Industry-first thinking",
     description:
-      "We understand the challenges of running a café, salon, or clinic. Our solutions are built for your reality.",
+      "A café site and a clinic site have different jobs. We design for how your customers decide — not for a one-size-fits-all template.",
   },
   {
-    title: "Performance matters",
+    title: "Speed without shortcuts",
     description:
-      "A beautiful site that loads slowly loses customers. We obsess over speed, SEO, and Core Web Vitals.",
+      "Fast delivery doesn't mean sloppy work. Templates and components exist so we spend time on what matters: your story, your photos, your goals.",
   },
   {
-    title: "Partnership, not transactions",
+    title: "Long-term partnership",
     description:
-      "We're invested in your success. From launch to growth, we're your long-term digital partner.",
+      "Launch day is the beginning. We stay available for updates, optimisations, and the next chapter of your business online.",
   },
 ];
 
 export const PROCESS_STEPS = [
   {
     step: "01",
-    title: "Discovery",
+    title: "Choose your starting point",
     description:
-      "We learn your business, audience, and goals in a focused consultation.",
+      "Pick an industry, browse templates, and see a live preview before you commit to anything.",
   },
   {
     step: "02",
-    title: "Design",
+    title: "Make it yours",
     description:
-      "Custom mockups refined until every detail feels unmistakably yours.",
+      "Swap components, adjust your palette, upload photos, and refine copy — all without touching code.",
   },
   {
     step: "03",
-    title: "Development",
+    title: "Review together",
     description:
-      "Pixel-perfect build with performance, SEO, and accessibility baked in.",
+      "We walk through every page on desktop and mobile. Adjustments happen in real time, not over email threads.",
   },
   {
     step: "04",
-    title: "Launch",
+    title: "Publish & grow",
     description:
-      "Thorough testing, training, and a confident go-live with ongoing support.",
+      "Go live with SEO foundations in place. Need changes later? Update from your dashboard or tap us for support.",
   },
 ];
 
-export const WHY_AUREVIA = [
+export const HOW_IT_WORKS = [
   {
-    title: "Premium by default",
+    title: "Templates, not blank pages",
     description:
-      "Every project receives the design attention usually reserved for enterprise budgets.",
+      "Every industry comes with starter layouts — hero, gallery, services, contact — already composed. You customise, not build from scratch.",
   },
   {
-    title: "Industry expertise",
+    title: "Components you can swap",
     description:
-      "Deep understanding of cafés, salons, clinics, and local retail — not generic agency work.",
+      "Don't like the hero? Pick another from the catalogue. Sections snap in and preview instantly.",
   },
   {
-    title: "Fast delivery",
+    title: "Themes that change everything",
     description:
-      "Most sites live in 2–4 weeks without compromising quality or attention to detail.",
+      "One click updates typography, colours, spacing, and button styles across your entire site.",
   },
   {
-    title: "Transparent pricing",
+    title: "Publish when you're ready",
     description:
-      "Clear packages with no hidden fees. You know exactly what you're investing in.",
+      "Preview on desktop, tablet, and mobile. Hit publish and your site is live on your domain.",
+  },
+];
+
+export const DESIGN_PHILOSOPHY = [
+  {
+    title: "Restraint is premium",
+    description:
+      "White space, consistent type, and purposeful motion. We remove noise so your business stands out.",
+  },
+  {
+    title: "Photography leads",
+    description:
+      "Local businesses win with real imagery. Our layouts are built to showcase your space, products, and people.",
+  },
+  {
+    title: "Mobile is the default",
+    description:
+      "Most of your customers find you on a phone. Every template is designed thumb-first, not desktop-shrunk.",
+  },
+];
+
+export const TECHNOLOGY = [
+  {
+    title: "Next.js & React",
+    description:
+      "Modern, fast, and maintainable — the same stack used by companies at global scale.",
+  },
+  {
+    title: "Edge-ready hosting",
+    description:
+      "Sites deploy to global CDNs for sub-second loads whether your customer is in Mumbai or Miami.",
+  },
+  {
+    title: "Accessible by default",
+    description:
+      "Semantic HTML, keyboard navigation, and colour contrast checked — not bolted on after launch.",
+  },
+];
+
+export const COMPANY_TIMELINE = [
+  {
+    year: "2023",
+    title: "The problem became obvious",
+    description:
+      "Working with local businesses, we kept seeing the same gap: great shops with websites that didn't reflect their quality.",
+  },
+  {
+    year: "2024",
+    title: "BhaiKISite launched",
+    description:
+      "We built a component library and theme system so premium sites could ship in days, not months.",
+  },
+  {
+    year: "2025",
+    title: "Platform maturity",
+    description:
+      "The builder, template composer, and industry catalogue turned BhaiKISite from a studio into a creation platform.",
+  },
+];
+
+export const WHY_BHAIKISITE = [
+  {
+    title: "Built for local business",
+    description:
+      "Not enterprise software shrunk down. Every template understands menus, bookings, and foot traffic.",
+  },
+  {
+    title: "See before you buy",
+    description:
+      "Preview templates with your industry, theme, and palette — no imagination required.",
+  },
+  {
+    title: "Launch in days",
+    description:
+      "Most clients go live within two weeks. Some same-day, if content is ready.",
+  },
+  {
+    title: "Honest pricing",
+    description:
+      "Packages on the pricing page. No surprise invoices after the discovery call.",
   },
 ];

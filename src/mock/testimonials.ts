@@ -10,26 +10,26 @@ export const TESTIMONIALS: Testimonial[] = [
   {
     id: "1",
     quote:
-      "Aurevia transformed our café's online presence. Within a month, online orders increased by 40%. The website feels as warm and inviting as our space.",
+      "We replaced a PDF menu link with a proper site in under two weeks. Weekend foot traffic picked up — people tell us they found us on Google and liked what they saw.",
     author: "Priya Sharma",
     role: "Owner",
-    business: "Harbor Coffee Co.",
+    business: "Harbor Coffee Co., Kochi",
   },
   {
     id: "2",
     quote:
-      "We went from an outdated template to a website that clients compliment before they even sit in the chair. Bookings are up, and we look premium.",
+      "Our old site hid our prices and made booking confusing. The new one is straightforward — clients book online and we spend less time on the phone explaining services.",
     author: "Ananya Reddy",
-    role: "Founder",
-    business: "Atelier Salon",
+    role: "Owner",
+    business: "Atelier Salon, Hyderabad",
   },
   {
     id: "3",
     quote:
-      "Professional, patient, and incredibly talented. Aurevia understood our clinic's need for trust and delivered a site that patients actually use.",
+      "Patients mentioned the website in their first visit — that never happened before. It looks calm and professional, which is exactly what a clinic needs.",
     author: "Dr. Rajesh Kumar",
     role: "Director",
-    business: "Greenfield Clinic",
+    business: "Greenfield Clinic, Pune",
   },
 ];
 
@@ -42,33 +42,33 @@ export interface FAQItem {
 export const HOME_FAQ: FAQItem[] = [
   {
     id: "1",
-    question: "How long does it take to build a website?",
+    question: "Do I need to know how to code?",
     answer:
-      "Most business websites are delivered within 2–4 weeks. Premium projects with custom design may take 4–6 weeks. We'll provide a clear timeline during our discovery call.",
+      "No. Pick a template, swap sections, upload photos, and publish. If you want us to handle it, we do that too — same platform, less work for you.",
   },
   {
     id: "2",
-    question: "Do I need technical knowledge to manage my site?",
+    question: "How long until my site is live?",
     answer:
-      "Not at all. We build intuitive content structures and provide training. For ongoing updates, our maintenance plans handle everything for you.",
+      "If your photos and copy are ready, many businesses publish within a few days. Full custom projects with our team typically take 2–4 weeks.",
   },
   {
     id: "3",
-    question: "Can you redesign my existing website?",
+    question: "Can I preview before paying?",
     answer:
-      "Absolutely. We specialize in transforming outdated sites into modern, high-performing experiences while preserving your SEO rankings.",
+      "Yes. Browse industry templates, open live previews, and try the composer before you commit to a plan.",
   },
   {
     id: "4",
-    question: "What industries do you work with?",
+    question: "What if I already have a website?",
     answer:
-      "We work with local businesses across cafés, restaurants, salons, clinics, gyms, hotels, retail, and more. Every industry gets a tailored approach.",
+      "We migrate content, preserve your SEO where possible, and relaunch on a faster, cleaner foundation. Redesigns are a core part of what we do.",
   },
   {
     id: "5",
-    question: "Do you offer ongoing support?",
+    question: "Do you only work with certain industries?",
     answer:
-      "Yes. All plans include post-launch support, and we offer monthly maintenance plans for updates, security, and content changes.",
+      "We have dedicated templates for cafés, restaurants, salons, gyms, hotels, clinics, and more. If your business isn't listed, we still have flexible layouts that adapt.",
   },
 ];
 
@@ -77,18 +77,18 @@ export const CONTACT_FAQ: FAQItem[] = [
     id: "c1",
     question: "What's the best way to reach you?",
     answer:
-      "Email us at hello@aurevia.com or message us on WhatsApp for the fastest response. We typically reply within 24 hours.",
+      "Email hello@bhaikisite.com or WhatsApp us for the fastest reply. We respond within one business day.",
   },
   {
     id: "c2",
-    question: "Do you offer free consultations?",
+    question: "Is the first consultation free?",
     answer:
-      "Yes. Every project starts with a complimentary 30-minute discovery call to understand your business and goals.",
+      "Yes — a 30-minute call to understand your business and recommend the right template or service. No obligation.",
   },
   {
     id: "c3",
-    question: "Do you work with businesses outside India?",
+    question: "Do you work outside India?",
     answer:
-      "Currently we focus on Indian businesses, but we're open to international projects. Reach out and let's discuss.",
+      "Our templates and platform work anywhere. Most of our clients are in India, but we're happy to discuss international projects.",
   },
 ];

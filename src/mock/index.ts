@@ -1,6 +1,7 @@
 export * from "./navigation";
 export * from "./services";
 export * from "./industries";
+export * from "./industry-templates";
 export * from "./portfolio";
 export * from "./pricing";
 export * from "./testimonials";

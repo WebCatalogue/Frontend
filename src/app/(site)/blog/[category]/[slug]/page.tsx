@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: ArticlePageProps) {
   const { slug } = await params;
   const post = BLOG_POSTS.find((p) => p.slug === slug);
   return {
-    title: post ? `${post.title} — Aurevia` : "Article — Aurevia",
+    title: post ? `${post.title} — BhaiKISite` : "Article — BhaiKISite",
     description: post?.excerpt,
   };
 }

@@ -1,8 +1,9 @@
 import { PageHeader, PageSection } from "@/components/layout";
 
 export const metadata = {
-  title: "Terms & Conditions — Aurevia",
-  description: "Terms and conditions for using Aurevia services and website.",
+  title: "Terms & Conditions — BhaiKISite",
+  description:
+    "Terms and conditions for using BhaiKISite services and website.",
 };
 
 export default function TermsPage() {
@@ -18,7 +19,7 @@ export default function TermsPage() {
           {[
             {
               title: "Services",
-              body: "Aurevia provides web design and development services as described in individual project agreements. Scope, timeline, and deliverables are defined per project.",
+              body: "BhaiKISite provides web design and development services as described in individual project agreements. Scope, timeline, and deliverables are defined per project.",
             },
             {
               title: "Payment",
@@ -26,7 +27,7 @@ export default function TermsPage() {
             },
             {
               title: "Intellectual property",
-              body: "Upon full payment, clients receive ownership of custom design work created for their project. Aurevia retains the right to showcase completed work in our portfolio unless otherwise agreed.",
+              body: "Upon full payment, clients receive ownership of custom design work created for their project. BhaiKISite retains the right to showcase completed work in our portfolio unless otherwise agreed.",
             },
             {
               title: "Revisions",
@@ -34,11 +35,11 @@ export default function TermsPage() {
             },
             {
               title: "Limitation of liability",
-              body: "Aurevia's liability is limited to the amount paid for services. We are not liable for indirect, incidental, or consequential damages.",
+              body: "BhaiKISite's liability is limited to the amount paid for services. We are not liable for indirect, incidental, or consequential damages.",
             },
             {
               title: "Contact",
-              body: "Questions about these terms? Email hello@aurevia.com.",
+              body: "Questions about these terms? Email hello@bhaikisite.com.",
             },
           ].map((section) => (
             <section key={section.title}>

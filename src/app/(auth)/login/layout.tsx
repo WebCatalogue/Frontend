@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Sign in",
-  description: "Sign in to your Aurevia workspace.",
+  description: "Sign in to your BhaiKISite workspace.",
 };
 
 export default function LoginLayout({

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Building2, Globe2 } from "lucide-react";
+import { Building2, Globe2, Sparkles } from "lucide-react";
 import {
   CardGridSkeleton,
   ListSkeleton,
@@ -74,8 +74,14 @@ export default function AppOverviewPage() {
           {user?.firstName ? `, ${user.firstName}` : ""}
         </h1>
         <p className="type-body-lg text-foreground-muted mt-3 max-w-2xl">
-          Manage your businesses and websites from one place.
+          Build premium websites with components, themes, and templates.
         </p>
+        <Button asChild className="mt-6" size="lg">
+          <Link href="/app/compose">
+            <Sparkles className="size-4" aria-hidden />
+            Start composing
+          </Link>
+        </Button>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">

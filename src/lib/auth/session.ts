@@ -1,9 +1,5 @@
+import { STORAGE_KEYS } from "@/constants";
 import type { AuthTokens } from "@/types/api";
-
-const ACCESS_TOKEN_KEY = "aurevia_access_token";
-const REFRESH_TOKEN_KEY = "aurevia_refresh_token";
-const TOKEN_EXPIRY_KEY = "aurevia_token_expiry";
-const SESSION_COOKIE = "aurevia_has_session";
 
 function isBrowser(): boolean {
   return typeof window !== "undefined";
@@ -11,17 +7,17 @@ function isBrowser(): boolean {
 
 export function getAccessToken(): string | null {
   if (!isBrowser()) return null;
-  return localStorage.getItem(ACCESS_TOKEN_KEY);
+  return localStorage.getItem(STORAGE_KEYS.accessToken);
 }
 
 export function getRefreshToken(): string | null {
   if (!isBrowser()) return null;
-  return localStorage.getItem(REFRESH_TOKEN_KEY);
+  return localStorage.getItem(STORAGE_KEYS.refreshToken);
 }
 
 export function getTokenExpiry(): number | null {
   if (!isBrowser()) return null;
-  const raw = localStorage.getItem(TOKEN_EXPIRY_KEY);
+  const raw = localStorage.getItem(STORAGE_KEYS.tokenExpiry);
   return raw ? Number(raw) : null;
 }
 
@@ -33,23 +29,24 @@ export function isAccessTokenExpired(bufferMs = 30_000): boolean {
 
 function setSessionCookie(active: boolean): void {
   if (!isBrowser()) return;
+  const key = STORAGE_KEYS.sessionCookie;
   if (active) {
-    document.cookie = `${SESSION_COOKIE}=1; path=/; max-age=2592000; samesite=lax`;
+    document.cookie = `${key}=1; path=/; max-age=2592000; samesite=lax`;
   } else {
-    document.cookie = `${SESSION_COOKIE}=; path=/; max-age=0; samesite=lax`;
+    document.cookie = `${key}=; path=/; max-age=0; samesite=lax`;
   }
 }
 
 export function saveAuthSession(tokens: AuthTokens): void {
   if (!isBrowser()) return;
 
-  localStorage.setItem(ACCESS_TOKEN_KEY, tokens.accessToken);
-  localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refreshToken);
+  localStorage.setItem(STORAGE_KEYS.accessToken, tokens.accessToken);
+  localStorage.setItem(STORAGE_KEYS.refreshToken, tokens.refreshToken);
   setSessionCookie(true);
 
   if (tokens.expiresIn) {
     localStorage.setItem(
-      TOKEN_EXPIRY_KEY,
+      STORAGE_KEYS.tokenExpiry,
       String(Date.now() + tokens.expiresIn * 1000),
     );
   }
@@ -58,9 +55,9 @@ export function saveAuthSession(tokens: AuthTokens): void {
 export function clearAuthSession(): void {
   if (!isBrowser()) return;
 
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
-  localStorage.removeItem(REFRESH_TOKEN_KEY);
-  localStorage.removeItem(TOKEN_EXPIRY_KEY);
+  localStorage.removeItem(STORAGE_KEYS.accessToken);
+  localStorage.removeItem(STORAGE_KEYS.refreshToken);
+  localStorage.removeItem(STORAGE_KEYS.tokenExpiry);
   setSessionCookie(false);
 }
 

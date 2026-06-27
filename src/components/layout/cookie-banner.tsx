@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui";
 import { ROUTES } from "@/constants";
 
-const COOKIE_KEY = "aurevia-cookie-consent";
+import { STORAGE_KEYS } from "@/constants";
+
+const COOKIE_KEY = STORAGE_KEYS.cookieConsent;
 
 export function CookieBanner() {
   const [visible, setVisible] = useState(false);

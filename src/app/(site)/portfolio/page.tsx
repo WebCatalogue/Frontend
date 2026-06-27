@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { CtaBanner, PageHeader, PageSection } from "@/components/layout";
+import { DemoImage } from "@/components/marketing/demo-image";
 import { Reveal } from "@/components/playground/motion/primitives";
 import { Button } from "@/components/ui";
 import { PORTFOLIO_PROJECTS } from "@/mock/portfolio";
 
 export const metadata = {
-  title: "Portfolio — Aurevia",
+  title: "Portfolio — BhaiKISite",
   description:
-    "Selected projects showcasing premium websites for local businesses.",
+    "Real websites built for cafés, salons, clinics, restaurants, and fitness brands across India.",
 };
 
 export default function PortfolioPage() {
@@ -15,8 +16,8 @@ export default function PortfolioPage() {
     <>
       <PageHeader
         eyebrow="Portfolio"
-        title="Work we're proud of."
-        description="A selection of websites crafted for businesses that refused to settle for ordinary."
+        title="Sites that earn compliments before the first visit."
+        description="Each project started with a business that cared about quality — and a website that didn't reflect it. Here's what changed."
         breadcrumbs={[{ label: "Portfolio" }]}
       />
 
@@ -25,13 +26,16 @@ export default function PortfolioPage() {
           {PORTFOLIO_PROJECTS.map((project, i) => (
             <Reveal key={project.id} delay={i * 0.05}>
               <article className="group depth-panel flex h-full flex-col overflow-hidden">
-                <div
-                  className="h-52 sm:h-56"
-                  style={{ background: project.gradient }}
-                />
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <DemoImage
+                    src={project.image}
+                    alt={project.title}
+                    className="transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
                 <div className="flex flex-1 flex-col p-6 sm:p-7">
                   <p className="type-label text-foreground-subtle">
-                    {project.industry} · {project.year}
+                    {project.industry} · {project.location}
                   </p>
                   <h2 className="type-heading-md text-foreground mt-2">
                     {project.title}
@@ -39,19 +43,19 @@ export default function PortfolioPage() {
                   <p className="type-body-sm text-foreground-muted mt-2 flex-1">
                     {project.description}
                   </p>
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {project.technologies.map((tech) => (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {project.results.slice(0, 2).map((r) => (
                       <span
-                        key={tech}
-                        className="type-label text-foreground-subtle bg-muted rounded-full px-2 py-0.5 !tracking-normal !normal-case"
+                        key={r.label}
+                        className="type-label text-foreground-subtle bg-muted rounded-full px-2.5 py-1 !tracking-normal !normal-case"
                       >
-                        {tech}
+                        {r.value} {r.label.toLowerCase()}
                       </span>
                     ))}
                   </div>
                   <Button variant="outline" className="mt-6 w-full" asChild>
                     <Link href={`/portfolio/${project.slug}`}>
-                      View case study
+                      Read case study
                     </Link>
                   </Button>
                 </div>

@@ -4,16 +4,21 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BarChart3,
   Bell,
   Building2,
   ChevronRight,
   Command,
   Globe2,
+  Image,
   LayoutDashboard,
   LogOut,
   Menu,
+  Palette,
+  Puzzle,
   Search,
   Settings,
+  Sparkles,
   Users,
   X,
   type LucideIcon,
@@ -36,8 +41,13 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/app", label: "Overview", icon: LayoutDashboard, exact: true },
+  { href: "/app/compose", label: "Compose", icon: Sparkles },
   { href: "/app/businesses", label: "Businesses", icon: Building2 },
   { href: "/app/websites", label: "Websites", icon: Globe2 },
+  { href: "/app/assets", label: "Assets", icon: Puzzle },
+  { href: "/app/themes", label: "Themes", icon: Palette },
+  { href: "/app/media", label: "Media", icon: Image },
+  { href: "/app/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/app/team", label: "Team", icon: Users, adminOnly: true },
   { href: "/app/settings", label: "Settings", icon: Settings },
 ];
@@ -66,6 +76,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }, []);
 
   const visibleNav = NAV_ITEMS.filter((item) => !item.adminOnly || admin);
+
+  if (pathname.includes("/builder")) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="bg-background min-h-screen lg:flex">

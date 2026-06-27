@@ -8,8 +8,13 @@ import { cn } from "@/lib/utils";
 
 const LABELS: Record<string, string> = {
   app: "Overview",
+  compose: "Compose",
   businesses: "Businesses",
   websites: "Websites",
+  catalogue: "Catalogue",
+  themes: "Themes",
+  media: "Media",
+  analytics: "Analytics",
   builder: "Builder",
   team: "Team",
   settings: "Settings",

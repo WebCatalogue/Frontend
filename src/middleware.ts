@@ -1,10 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
-
-const SESSION_COOKIE = "aurevia_has_session";
+import { STORAGE_KEYS } from "@/constants";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const hasSession = request.cookies.get(SESSION_COOKIE)?.value === "1";
+  const hasSession =
+    request.cookies.get(STORAGE_KEYS.sessionCookie)?.value === "1";
 
   if (pathname.startsWith("/app") && !hasSession) {
     const loginUrl = new URL("/login", request.url);

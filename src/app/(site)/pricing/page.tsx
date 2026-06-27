@@ -7,7 +7,7 @@ import { PRICING_COMPARISON, PRICING_PLANS } from "@/mock/pricing";
 import { cn } from "@/lib/utils";
 
 export const metadata = {
-  title: "Pricing — Aurevia",
+  title: "Pricing — BhaiKISite",
   description:
     "Transparent pricing for premium business websites. Starter, Business, and Premium plans.",
 };

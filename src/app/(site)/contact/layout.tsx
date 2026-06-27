@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "Contact — Aurevia",
+  title: "Contact — BhaiKISite",
   description:
-    "Get in touch with Aurevia. Start your premium website project today.",
+    "Get in touch with BhaiKISite. Start your premium website project today.",
 };
 
 export default function ContactLayout({
