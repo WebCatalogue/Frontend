@@ -4,7 +4,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import * as authApi from "@/lib/api/auth";
 import * as businessApi from "@/lib/api/business";
 import * as builderApi from "@/lib/api/builder";
+import * as businessDataApi from "@/lib/api/business-data";
 import * as mediaApi from "@/lib/api/media";
+import * as registriesApi from "@/lib/api/registries";
 import * as navigationApi from "@/lib/api/navigation";
 import * as pagesApi from "@/lib/api/pages";
 import * as seoApi from "@/lib/api/seo";
@@ -25,6 +27,7 @@ import type {
   WebsiteNavigation,
   WebsiteSeo,
 } from "@/types/api";
+import type { BusinessDataCollection } from "@/types/api";
 
 export function useCurrentUser() {
   const { isAuthenticated } = useAuth();
@@ -152,6 +155,46 @@ export function useComponentRegistry() {
     queryKey: queryKeys.builder.registry,
     queryFn: builderApi.getComponentRegistry,
     staleTime: 5 * 60_000,
+  });
+}
+
+export function useComponentSchema(componentKey: string) {
+  return useQuery({
+    queryKey: queryKeys.builder.component(componentKey),
+    queryFn: () => builderApi.getComponentSchema(componentKey),
+    enabled: Boolean(componentKey),
+    staleTime: 5 * 60_000,
+  });
+}
+
+export function usePlatformRegistries() {
+  return useQuery({
+    queryKey: queryKeys.builder.registries,
+    queryFn: registriesApi.getUnifiedRegistries,
+    staleTime: 5 * 60_000,
+  });
+}
+
+export function useMediaLibrary(search?: string) {
+  const { isAuthenticated } = useAuth();
+  return useQuery({
+    queryKey: [...queryKeys.media.all, search ?? ""] as const,
+    queryFn: () => mediaApi.listMedia({ search }),
+    enabled: isAuthenticated,
+    retry: false,
+  });
+}
+
+export function useBusinessDataCollection(
+  websiteId: string,
+  collection: BusinessDataCollection,
+) {
+  const { isAuthenticated } = useAuth();
+  return useQuery({
+    queryKey: queryKeys.businessData.collection(websiteId, collection),
+    queryFn: () => businessDataApi.listBusinessData(websiteId, collection),
+    enabled: isAuthenticated && Boolean(websiteId),
+    retry: false,
   });
 }
 
@@ -446,6 +489,85 @@ export function useUpdateWebsiteConfig(websiteId: string) {
       void qc.invalidateQueries({
         queryKey: queryKeys.websites.config(websiteId),
       });
+    },
+  });
+}
+
+export function useCreateBusinessDataItem(
+  websiteId: string,
+  collection: BusinessDataCollection,
+) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: Record<string, unknown>) =>
+      businessDataApi.createBusinessDataItem(websiteId, collection, payload),
+    onSuccess: () => {
+      void qc.invalidateQueries({
+        queryKey: queryKeys.businessData.collection(websiteId, collection),
+      });
+    },
+  });
+}
+
+export function useUpdateBusinessDataItem(
+  websiteId: string,
+  collection: BusinessDataCollection,
+) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      itemId,
+      payload,
+    }: {
+      itemId: string;
+      payload: Record<string, unknown>;
+    }) =>
+      businessDataApi.updateBusinessDataItem(
+        websiteId,
+        collection,
+        itemId,
+        payload,
+      ),
+    onSuccess: () => {
+      void qc.invalidateQueries({
+        queryKey: queryKeys.businessData.collection(websiteId, collection),
+      });
+    },
+  });
+}
+
+export function useDeleteBusinessDataItem(
+  websiteId: string,
+  collection: BusinessDataCollection,
+) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (itemId: string) =>
+      businessDataApi.deleteBusinessDataItem(websiteId, collection, itemId),
+    onSuccess: () => {
+      void qc.invalidateQueries({
+        queryKey: queryKeys.businessData.collection(websiteId, collection),
+      });
+    },
+  });
+}
+
+export function useUploadMedia() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (formData: FormData) => mediaApi.uploadMedia(formData),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.media.all });
+    },
+  });
+}
+
+export function useDeleteMedia() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (mediaId: string) => mediaApi.deleteMedia(mediaId),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.media.all });
     },
   });
 }

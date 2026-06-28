@@ -20,7 +20,7 @@ interface TemplateCardProps {
 
 export function TemplateCard({
   template,
-  industrySlug,
+  industrySlug: _industrySlug,
   onPreview,
   index = 0,
 }: TemplateCardProps) {
@@ -110,11 +110,9 @@ export function TemplateCard({
             Preview
           </Button>
           <Button variant="primary" className="flex-1" asChild>
-            <Link
-              href={`${ROUTES.appCompose}?industry=${industrySlug}&template=${template.id}`}
-            >
+            <Link href={ROUTES.visualise}>
               <Sparkles className="size-4" aria-hidden />
-              Use template
+              Visualise
             </Link>
           </Button>
         </div>

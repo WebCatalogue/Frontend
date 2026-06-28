@@ -3,7 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowDown, ArrowUp, ChevronLeft, Plus, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronLeft,
+  Copy,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui";
 import { Badge } from "@/components/ui/badge";
@@ -97,16 +104,27 @@ function BuilderStudioInner({
   } = useBuilderStudio();
   const sectionsQuery = usePageSections(selectedPageId ?? "");
   const sections = sectionsQuery.data ?? [];
+  const reorder = useReorderSections(selectedPageId ?? "");
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "z" && !e.shiftKey) {
         e.preventDefault();
-        if (canUndo) undo();
+        if (canUndo && selectedPageId) {
+          const snap = undo();
+          if (snap?.sectionIds.length) {
+            void reorder.mutateAsync(snap.sectionIds);
+          }
+        }
       }
       if ((e.metaKey || e.ctrlKey) && e.key === "z" && e.shiftKey) {
         e.preventDefault();
-        if (canRedo) redo();
+        if (canRedo && selectedPageId) {
+          const snap = redo();
+          if (snap?.sectionIds.length) {
+            void reorder.mutateAsync(snap.sectionIds);
+          }
+        }
       }
       if ((e.metaKey || e.ctrlKey) && e.key === "s") {
         e.preventDefault();
@@ -114,7 +132,7 @@ function BuilderStudioInner({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [undo, redo, canUndo, canRedo]);
+  }, [undo, redo, canUndo, canRedo, selectedPageId, reorder]);
 
   const rightTitle =
     rightPanel === "theme"
@@ -311,10 +329,25 @@ function SectionsPanel({ sections }: { sections: Section[] }) {
     setSelectedSectionId,
     selectedPageId,
     setRightPanel,
+    pushHistory,
   } = useBuilderStudio();
+  const reorder = useReorderSections(selectedPageId ?? "");
+  const [dragId, setDragId] = useState<string | null>(null);
   const sorted = [...sections].sort(
     (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
   );
+
+  async function handleReorder(fromId: string, toId: string) {
+    if (fromId === toId) return;
+    const fromIndex = sorted.findIndex((s) => s.id === fromId);
+    const toIndex = sorted.findIndex((s) => s.id === toId);
+    if (fromIndex < 0 || toIndex < 0) return;
+    const next = [...sorted];
+    const [moved] = next.splice(fromIndex, 1);
+    next.splice(toIndex, 0, moved);
+    pushHistory(sorted, "Reorder sections");
+    await reorder.mutateAsync(next.map((s) => s.id));
+  }
 
   if (!selectedPageId) {
     return (
@@ -325,34 +358,51 @@ function SectionsPanel({ sections }: { sections: Section[] }) {
   return (
     <div className="space-y-3">
       <h3 className="type-heading-sm font-medium">Page sections</h3>
+      <p className="type-body-sm text-foreground-muted">
+        Drag to reorder sections on the canvas.
+      </p>
       {sorted.length === 0 ? (
         <p className="type-body-sm text-foreground-muted">
           No sections yet. Add from Components.
         </p>
       ) : (
         sorted.map((section, index) => (
-          <button
+          <div
             key={section.id}
-            type="button"
-            onClick={() => {
-              setSelectedSectionId(section.id);
-              setRightPanel("properties");
+            draggable
+            onDragStart={() => setDragId(section.id)}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={() => {
+              if (dragId) void handleReorder(dragId, section.id);
+              setDragId(null);
             }}
-            className={cn(
-              "flex w-full items-center gap-2 rounded-[var(--radius-lg)] border p-3 text-left transition-colors",
-              selectedSectionId === section.id
-                ? "border-accent bg-accent-muted/30"
-                : "border-border hover:border-border-strong",
-            )}
+            onDragEnd={() => setDragId(null)}
           >
-            <SectionDragHandle />
-            <div className="min-w-0 flex-1">
-              <p className="type-body-sm truncate font-medium">
-                {section.componentKey}
-              </p>
-              <p className="type-label text-foreground-subtle">#{index + 1}</p>
-            </div>
-          </button>
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedSectionId(section.id);
+                setRightPanel("properties");
+              }}
+              className={cn(
+                "flex w-full items-center gap-2 rounded-[var(--radius-lg)] border p-3 text-left transition-colors",
+                selectedSectionId === section.id
+                  ? "border-accent bg-accent-muted/30"
+                  : "border-border hover:border-border-strong",
+                dragId === section.id && "opacity-50",
+              )}
+            >
+              <SectionDragHandle />
+              <div className="min-w-0 flex-1">
+                <p className="type-body-sm truncate font-medium">
+                  {section.componentKey}
+                </p>
+                <p className="type-label text-foreground-subtle">
+                  #{index + 1}
+                </p>
+              </div>
+            </button>
+          </div>
         ))
       )}
     </div>
@@ -702,8 +752,10 @@ function PropertiesPanelContent({
   selected?: Section;
   pageId: string | null;
 }) {
-  const { selectedSectionId, setSelectedSectionId } = useBuilderStudio();
+  const { selectedSectionId, setSelectedSectionId, pushHistory } =
+    useBuilderStudio();
   const deleteSection = useDeleteSection(pageId ?? "");
+  const createSection = useCreateSection(pageId ?? "");
   const reorder = useReorderSections(pageId ?? "");
   const { addToast } = useToast();
 
@@ -716,6 +768,7 @@ function PropertiesPanelContent({
     const t = index + dir;
     if (t < 0 || t >= next.length) return;
     [next[index], next[t]] = [next[t], next[index]];
+    pushHistory(sorted, "Reorder sections");
     void reorder.mutateAsync(next.map((s) => s.id));
   }
 
@@ -765,6 +818,32 @@ function PropertiesPanelContent({
               variant="ghost"
               size="icon"
               onClick={async () => {
+                try {
+                  pushHistory(sorted, "Duplicate section");
+                  const dup = await createSection.mutateAsync({
+                    componentKey: section.componentKey,
+                    variant: section.variant ?? undefined,
+                    settings: section.settings ?? undefined,
+                  });
+                  setSelectedSectionId(dup.id);
+                  addToast({ title: "Section duplicated", variant: "success" });
+                } catch (err) {
+                  addToast({
+                    title: "Duplicate failed",
+                    description: getErrorMessage(err),
+                    variant: "error",
+                  });
+                }
+              }}
+              aria-label="Duplicate"
+            >
+              <Copy className="size-3.5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={async () => {
+                pushHistory(sorted, "Delete section");
                 await deleteSection.mutateAsync(section.id);
                 addToast({ title: "Removed", variant: "success" });
               }}

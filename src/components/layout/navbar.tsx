@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MegaMenu } from "@/components/layout/mega-menu";
 import { ThemeToggle } from "@/components/shared";
 import { Button } from "@/components/ui";
 import { APP_NAME, ROUTES } from "@/constants";
@@ -14,7 +13,6 @@ export function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [megaOpen, setMegaOpen] = useState<string | null>(null);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 24);
@@ -25,7 +23,6 @@ export function Navbar() {
 
   useEffect(() => {
     setMobileOpen(false);
-    setMegaOpen(null);
   }, [pathname]);
 
   useEffect(() => {
@@ -59,50 +56,24 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop nav */}
         <nav
           className="hidden items-center gap-1 lg:flex"
           aria-label="Main navigation"
-          onMouseLeave={() => setMegaOpen(null)}
         >
-          {MAIN_NAV.map((item) =>
-            "mega" in item && item.mega ? (
-              <div
-                key={item.label}
-                className="relative"
-                onMouseEnter={() => setMegaOpen(item.mega)}
-              >
-                <Link
-                  href={item.href}
-                  className={cn(
-                    "type-body-sm text-foreground-muted hover:bg-muted/50 hover:text-foreground rounded-[var(--radius-md)] px-3 py-2 transition-colors",
-                    megaOpen === item.mega && "text-foreground",
-                  )}
-                >
-                  {item.label}
-                </Link>
-                {megaOpen === item.mega && (
-                  <MegaMenu
-                    type={item.mega}
-                    onClose={() => setMegaOpen(null)}
-                  />
-                )}
-              </div>
-            ) : (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={cn(
-                  "type-body-sm hover:bg-muted/50 hover:text-foreground rounded-[var(--radius-md)] px-3 py-2 transition-colors",
-                  pathname === item.href
-                    ? "text-foreground"
-                    : "text-foreground-muted",
-                )}
-              >
-                {item.label}
-              </Link>
-            ),
-          )}
+          {MAIN_NAV.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={cn(
+                "type-body-sm hover:bg-muted/50 hover:text-foreground rounded-[var(--radius-md)] px-3 py-2 transition-colors",
+                pathname === item.href
+                  ? "text-foreground"
+                  : "text-foreground-muted",
+              )}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -113,7 +84,7 @@ export function Navbar() {
             className="hidden sm:inline-flex"
             asChild
           >
-            <Link href={ROUTES.contact}>Get in touch</Link>
+            <Link href={ROUTES.enquiry}>Submit enquiry</Link>
           </Button>
 
           <button
@@ -148,7 +119,6 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {mobileOpen && (
         <nav
           id="mobile-menu"
@@ -170,7 +140,7 @@ export function Navbar() {
           <div className="mt-6 flex items-center gap-3 border-t border-[var(--color-border-subtle)] pt-6">
             <ThemeToggle />
             <Button variant="primary" className="flex-1" asChild>
-              <Link href={ROUTES.contact}>Get in touch</Link>
+              <Link href={ROUTES.enquiry}>Submit enquiry</Link>
             </Button>
           </div>
         </nav>

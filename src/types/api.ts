@@ -118,14 +118,65 @@ export interface Page {
   updatedAt?: string;
 }
 
+export interface ComponentSettingsSchemaField {
+  type?: string;
+  title?: string;
+  description?: string;
+  default?: unknown;
+  enum?: string[];
+  minimum?: number;
+  maximum?: number;
+  format?: string;
+  items?: ComponentSettingsSchemaField;
+  properties?: Record<string, ComponentSettingsSchemaField>;
+  required?: string[];
+}
+
 export interface BuilderComponentDefinition {
   key: string;
   category: string;
-  displayName: string;
+  displayName?: string;
   description?: string;
   variants?: string[];
-  settingsSchema?: Record<string, unknown>;
+  supportedVariants?: string[];
+  schemaVersion?: string;
+  defaultSettings?: Record<string, unknown>;
+  settingsSchema?: Record<string, ComponentSettingsSchemaField>;
+  /** Compatible business-data collection keys */
+  compatibleCollections?: string[];
 }
+
+export interface RegistryAsset {
+  id: string;
+  kind: string;
+  name: string;
+  description?: string;
+  version?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface BusinessDataRecord {
+  id: string;
+  websiteId?: string;
+  sortOrder?: number;
+  version?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  [key: string]: unknown;
+}
+
+export type BusinessDataCollection =
+  | "menu"
+  | "menu-categories"
+  | "services"
+  | "memberships"
+  | "pricing"
+  | "testimonials"
+  | "gallery"
+  | "team"
+  | "faqs"
+  | "events"
+  | "opening-hours";
 
 export interface Section {
   id: string;

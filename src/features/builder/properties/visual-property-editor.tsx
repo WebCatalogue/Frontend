@@ -1,8 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Input, Textarea } from "@/components/ui";
 import { Button } from "@/components/ui/button";
+import { useComponentRegistry } from "@/hooks/use-api-queries";
+import { ImagePickerField } from "@/features/media/image-picker-field";
+import {
+  getComponentDefinition,
+  resolvePropertySchemaFromComponent,
+} from "./schema-resolver";
 import { getPropertySchema, type PropertyFieldSchema } from "./schemas";
 
 interface VisualPropertyEditorProps {
@@ -22,7 +28,19 @@ export function VisualPropertyEditor({
 }: VisualPropertyEditorProps) {
   const [advanced, setAdvanced] = useState(false);
   const [json, setJson] = useState(() => JSON.stringify(settings, null, 2));
-  const schema = getPropertySchema(componentKey);
+  const registryQuery = useComponentRegistry();
+
+  const schema = useMemo(() => {
+    const component = getComponentDefinition(registryQuery.data, componentKey);
+    const fromBackend = resolvePropertySchemaFromComponent(
+      component,
+      componentKey,
+    );
+    if (fromBackend.length > 2 || component?.defaultSettings)
+      return fromBackend;
+    const legacy = getPropertySchema(componentKey);
+    return legacy.length > 2 ? legacy : fromBackend;
+  }, [registryQuery.data, componentKey]);
 
   const groups = schema.reduce<Record<string, PropertyFieldSchema[]>>(
     (acc, field) => {
@@ -174,6 +192,32 @@ function PropertyField({
         value={value !== undefined ? String(value) : ""}
         onChange={(e) => onChange(Number(e.target.value))}
       />
+    );
+  }
+
+  if (field.type === "image") {
+    return (
+      <ImagePickerField
+        label={field.label}
+        value={String(value ?? "")}
+        onChange={(v) => onChange(v)}
+      />
+    );
+  }
+
+  if (field.type === "color") {
+    return (
+      <label className="block space-y-1">
+        <span className="type-body-sm text-foreground-muted">
+          {field.label}
+        </span>
+        <input
+          type="color"
+          value={String(value ?? "#000000")}
+          onChange={(e) => onChange(e.target.value)}
+          className="border-border h-10 w-full cursor-pointer rounded-[var(--radius-md)] border"
+        />
+      </label>
     );
   }
 

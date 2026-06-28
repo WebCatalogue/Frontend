@@ -8,7 +8,8 @@ export type BusinessDataType =
   | "gallery"
   | "pricing"
   | "faqs"
-  | "events";
+  | "events"
+  | "opening-hours";
 
 export interface BusinessDataField {
   key: string;

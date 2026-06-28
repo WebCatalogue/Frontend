@@ -47,17 +47,21 @@ const FallbackSection = dynamic(() =>
   import("./components/FallbackSection").then((m) => m.FallbackSection),
 );
 
-/** Maps backend registry keys → frontend components */
+/** Maps backend registry keys → frontend components (with legacy aliases) */
 export const COMPONENT_REGISTRY: Record<string, RegistryEntry> = {
+  "hero.classic": HeroBasic,
   "hero.basic": HeroBasic,
+  "hero.centered": HeroBasic,
   "hero.split": HeroSplit,
   "hero.video": HeroVideo,
   "gallery.grid": GalleryGrid,
   "gallery.carousel": GalleryCarousel,
   "contact.map": ContactMap,
   "faq.accordion": FaqAccordion,
+  "footer.standard": FooterSimple,
   "footer.simple": FooterSimple,
   "cta.banner": CtaBanner,
+  "about.timeline": AboutStory,
   "about.story": AboutStory,
 };
 

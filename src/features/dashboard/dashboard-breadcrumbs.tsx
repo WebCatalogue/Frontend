@@ -7,17 +7,21 @@ import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const LABELS: Record<string, string> = {
-  app: "Overview",
-  compose: "Compose",
-  businesses: "Businesses",
-  websites: "Websites",
-  catalogue: "Catalogue",
-  themes: "Themes",
-  media: "Media",
+  app: "Dashboard",
+  enquiries: "New Enquiries",
+  todo: "Our To-Do",
+  projects: "Projects",
+  waiting: "Waiting For Client",
+  completed: "Completed",
+  maintenance: "Maintenance",
+  clients: "Clients",
+  calendar: "Calendar",
+  activity: "Activity",
+  templates: "Templates",
+  assets: "Assets",
   analytics: "Analytics",
-  builder: "Builder",
-  team: "Team",
   settings: "Settings",
+  builder: "Builder",
 };
 
 export function DashboardBreadcrumbs() {
@@ -35,7 +39,7 @@ export function DashboardBreadcrumbs() {
       path += `/${segment}`;
 
       if (segment === "app" && i === 0) {
-        items.push({ href: "/app", label: "Overview" });
+        items.push({ href: "/app", label: "Dashboard" });
         continue;
       }
 

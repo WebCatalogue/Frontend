@@ -3,20 +3,27 @@
 import { memo } from "react";
 import type { PublishedPage, PublishedWebsite } from "@/types/api";
 import { RegistrySection } from "@/features/builder/registry";
+import { ThemeEngineProvider } from "@/features/platform/theme-engine";
+import { getTheme } from "@/features/platform/themes";
 
 interface PublishedSiteRendererProps {
   website: PublishedWebsite;
   activePageSlug?: string;
+  paletteId?: string;
 }
 
 export const PublishedSiteRenderer = memo(function PublishedSiteRenderer({
   website,
   activePageSlug,
+  paletteId,
 }: PublishedSiteRendererProps) {
   const page =
     website.pages.find(
       (p) => p.slug === activePageSlug || p.path === `/${activePageSlug}`,
     ) ?? website.pages[0];
+
+  const themeId = website.themeId ?? "modern";
+  const resolvedPalette = paletteId ?? getTheme(themeId).defaultPaletteId;
 
   if (!page) {
     return (
@@ -29,16 +36,28 @@ export const PublishedSiteRenderer = memo(function PublishedSiteRenderer({
   }
 
   return (
-    <div className="bg-background min-h-screen">
-      <SiteHeader website={website} page={page} />
-      <main id="published-content">
-        {[...page.sections]
-          .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-          .map((section) => (
-            <RegistrySection key={section.id} section={section} />
-          ))}
-      </main>
-    </div>
+    <ThemeEngineProvider
+      initialThemeId={themeId}
+      initialPaletteId={resolvedPalette}
+    >
+      <div
+        className="min-h-screen"
+        style={{
+          background: "var(--preview-background)",
+          color: "var(--preview-foreground)",
+          fontFamily: "var(--preview-font-body)",
+        }}
+      >
+        <SiteHeader website={website} page={page} />
+        <main id="published-content">
+          {[...page.sections]
+            .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+            .map((section) => (
+              <RegistrySection key={section.id} section={section} />
+            ))}
+        </main>
+      </div>
+    </ThemeEngineProvider>
   );
 });
 

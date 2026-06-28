@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input, Button } from "@/components/ui";
 import { useToast } from "@/components/ui/toast";
 import { VisualPropertyEditor } from "@/features/builder/properties/visual-property-editor";
@@ -15,6 +15,7 @@ import {
   useUpdateSection,
   useUpdateSeo,
   useUpdateWebsiteConfig,
+  useWebsiteSeo,
 } from "@/hooks/use-api-queries";
 import { getErrorMessage } from "@/lib/errors/api-error";
 import type { PublishedSection, Section } from "@/types/api";
@@ -168,10 +169,22 @@ export function TokensPanelContent() {
 }
 
 export function SeoPanelContent({ websiteId }: { websiteId: string }) {
+  const seoQuery = useWebsiteSeo(websiteId);
   const updateSeo = useUpdateSeo(websiteId);
   const { addToast } = useToast();
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
+
+  useEffect(() => {
+    if (seoQuery.data) {
+      setTitle(seoQuery.data.metaTitle ?? "");
+      setDesc(seoQuery.data.metaDescription ?? "");
+    }
+  }, [seoQuery.data]);
+
+  if (seoQuery.isLoading) {
+    return <p className="type-body-sm text-foreground-muted">Loading SEO…</p>;
+  }
 
   return (
     <div className="space-y-3">

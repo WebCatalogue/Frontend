@@ -296,7 +296,12 @@ export function enrichCatalogueItem(
   return {
     key: component.key,
     category,
-    displayName: component.displayName,
+    displayName:
+      component.displayName ??
+      component.key
+        .split(".")
+        .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+        .join(" "),
     description: component.description ?? "",
     variants: component.variants,
     settingsSchema: component.settingsSchema,

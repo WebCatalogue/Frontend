@@ -1,7 +1,9 @@
+import type { BusinessDataCollection } from "@/types/api";
 import type { BusinessDataSource } from "./types";
 
 export const BUSINESS_DATA_SOURCES: (BusinessDataSource & {
   apiAvailable: boolean;
+  collection: BusinessDataCollection;
 })[] = [
   {
     id: "cafe-menu",
@@ -10,7 +12,8 @@ export const BUSINESS_DATA_SOURCES: (BusinessDataSource & {
       "Drinks, pastries, and daily specials with prices and dietary tags.",
     icon: "☕",
     apiEndpoint: "/websites/:id/data/menu",
-    apiAvailable: false,
+    collection: "menu",
+    apiAvailable: true,
     industries: ["cafe", "bakery"],
     fields: [
       { key: "name", label: "Item name", type: "text", required: true },
@@ -26,7 +29,8 @@ export const BUSINESS_DATA_SOURCES: (BusinessDataSource & {
     description: "Tiered plans with features, pricing, and signup CTAs.",
     icon: "💪",
     apiEndpoint: "/websites/:id/data/memberships",
-    apiAvailable: false,
+    collection: "memberships",
+    apiAvailable: true,
     industries: ["gym"],
     fields: [
       { key: "name", label: "Plan name", type: "text", required: true },
@@ -40,7 +44,8 @@ export const BUSINESS_DATA_SOURCES: (BusinessDataSource & {
     description: "Service menu with duration, stylist, and booking links.",
     icon: "✂️",
     apiEndpoint: "/websites/:id/data/services",
-    apiAvailable: false,
+    collection: "services",
+    apiAvailable: true,
     industries: ["salon"],
     fields: [
       { key: "name", label: "Service", type: "text", required: true },
@@ -55,7 +60,8 @@ export const BUSINESS_DATA_SOURCES: (BusinessDataSource & {
       "Menu sections — starters, mains, desserts, and seasonal items.",
     icon: "🍽️",
     apiEndpoint: "/websites/:id/data/menu-categories",
-    apiAvailable: false,
+    collection: "menu-categories",
+    apiAvailable: true,
     industries: ["restaurant"],
     fields: [
       { key: "name", label: "Category", type: "text", required: true },
@@ -68,7 +74,8 @@ export const BUSINESS_DATA_SOURCES: (BusinessDataSource & {
     description: "Staff profiles with role, bio, and photo.",
     icon: "👥",
     apiEndpoint: "/websites/:id/data/team",
-    apiAvailable: false,
+    collection: "team",
+    apiAvailable: true,
     industries: ["clinic", "salon", "education"],
     fields: [
       { key: "name", label: "Name", type: "text", required: true },
@@ -83,7 +90,8 @@ export const BUSINESS_DATA_SOURCES: (BusinessDataSource & {
     description: "Customer quotes with name and business.",
     icon: "💬",
     apiEndpoint: "/websites/:id/data/testimonials",
-    apiAvailable: false,
+    collection: "testimonials",
+    apiAvailable: true,
     industries: ["cafe", "salon", "gym", "restaurant"],
     fields: [
       { key: "quote", label: "Quote", type: "textarea", required: true },
@@ -97,7 +105,8 @@ export const BUSINESS_DATA_SOURCES: (BusinessDataSource & {
     description: "Image collections for portfolios and product showcases.",
     icon: "🖼️",
     apiEndpoint: "/websites/:id/data/gallery",
-    apiAvailable: false,
+    collection: "gallery",
+    apiAvailable: true,
     industries: ["photography", "fashion", "furniture", "jewellery"],
     fields: [
       { key: "title", label: "Title", type: "text" },
@@ -111,7 +120,8 @@ export const BUSINESS_DATA_SOURCES: (BusinessDataSource & {
     description: "Service or product pricing tables.",
     icon: "💰",
     apiEndpoint: "/websites/:id/data/pricing",
-    apiAvailable: false,
+    collection: "pricing",
+    apiAvailable: true,
     industries: ["gym", "salon", "education"],
     fields: [
       { key: "name", label: "Plan", type: "text", required: true },
@@ -125,7 +135,8 @@ export const BUSINESS_DATA_SOURCES: (BusinessDataSource & {
     description: "Question and answer pairs for support sections.",
     icon: "❓",
     apiEndpoint: "/websites/:id/data/faqs",
-    apiAvailable: false,
+    collection: "faqs",
+    apiAvailable: true,
     industries: ["clinic", "gym", "education"],
     fields: [
       { key: "question", label: "Question", type: "text", required: true },
@@ -138,12 +149,29 @@ export const BUSINESS_DATA_SOURCES: (BusinessDataSource & {
     description: "Upcoming events, workshops, and promotions.",
     icon: "📅",
     apiEndpoint: "/websites/:id/data/events",
-    apiAvailable: false,
+    collection: "events",
+    apiAvailable: true,
     industries: ["restaurant", "hotel", "education"],
     fields: [
       { key: "title", label: "Event title", type: "text", required: true },
       { key: "date", label: "Date", type: "text" },
       { key: "description", label: "Description", type: "textarea" },
+    ],
+  },
+  {
+    id: "opening-hours",
+    name: "Opening Hours",
+    description: "Weekly schedule and special hours for your business.",
+    icon: "🕐",
+    apiEndpoint: "/websites/:id/data/opening-hours",
+    collection: "opening-hours",
+    apiAvailable: true,
+    industries: ["cafe", "restaurant", "salon", "gym", "clinic", "hotel"],
+    fields: [
+      { key: "day", label: "Day", type: "text", required: true },
+      { key: "open", label: "Opens", type: "text" },
+      { key: "close", label: "Closes", type: "text" },
+      { key: "note", label: "Note", type: "text" },
     ],
   },
 ];

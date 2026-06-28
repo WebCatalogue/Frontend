@@ -73,9 +73,10 @@ export default async function IndustryDetailPage({
               </Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
-              <Link href={`${ROUTES.appCompose}?industry=${slug}`}>
-                Start with a template
-              </Link>
+              <Link href={ROUTES.visualise}>Visualise your site</Link>
+            </Button>
+            <Button variant="outline" size="lg" asChild>
+              <Link href={ROUTES.enquiry}>Submit enquiry</Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
               <Link href={ROUTES.contact}>Talk to us</Link>

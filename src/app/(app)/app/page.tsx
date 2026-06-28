@@ -1,167 +1,274 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Building2, Globe2, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  Calendar,
+  CheckCircle2,
+  Inbox,
+  IndianRupee,
+  Plus,
+  Sparkles,
+  Wrench,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   CardGridSkeleton,
   ListSkeleton,
 } from "@/components/shared/list-skeleton";
 import {
-  QueryEmptyState,
-  QueryErrorState,
-  QueryLoadingState,
-} from "@/components/shared/query-state";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+  NewProjectModal,
+  ProjectTimeline,
+  StatCard,
+} from "@/features/agency/components";
+import { useAgencyStore } from "@/features/agency";
 import {
-  useBusinesses,
-  useCurrentTenant,
-  useCurrentUser,
-} from "@/hooks/use-api-queries";
+  fetchCalendarEvents,
+  fetchDashboardStats,
+  fetchRecentActivity,
+} from "@/services/agency";
+import type {
+  ActivityItem,
+  CalendarEvent,
+  DashboardStats,
+} from "@/types/agency";
+import { useToast } from "@/components/ui/toast";
 
-export default function AppOverviewPage() {
-  const userQuery = useCurrentUser();
-  const tenantQuery = useCurrentTenant();
-  const businessesQuery = useBusinesses();
+export default function AgencyDashboardPage() {
+  const { createProject, projects } = useAgencyStore();
+  const { addToast } = useToast();
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [newProjectOpen, setNewProjectOpen] = useState(false);
 
-  const isInitialLoading =
-    userQuery.isLoading || tenantQuery.isLoading || businessesQuery.isLoading;
+  useEffect(() => {
+    void (async () => {
+      const [s, a, e] = await Promise.all([
+        fetchDashboardStats(),
+        fetchRecentActivity(),
+        fetchCalendarEvents(),
+      ]);
+      setStats(s);
+      setActivity(a);
+      setEvents(e);
+      setLoading(false);
+    })();
+  }, [projects]);
 
-  if (isInitialLoading) {
+  if (loading) {
     return (
       <div className="space-y-8">
-        <div className="space-y-3">
-          <div className="bg-muted h-8 w-48 animate-pulse rounded-md" />
-          <div className="bg-muted h-4 w-72 animate-pulse rounded-md" />
-        </div>
-        <CardGridSkeleton count={2} />
-        <ListSkeleton rows={3} />
+        <CardGridSkeleton count={4} />
+        <ListSkeleton rows={4} />
       </div>
     );
   }
 
-  const primaryError =
-    userQuery.error ?? tenantQuery.error ?? businessesQuery.error;
-
-  if (primaryError) {
-    return (
-      <QueryErrorState
-        error={primaryError}
-        onRetry={() => {
-          void userQuery.refetch();
-          void tenantQuery.refetch();
-          void businessesQuery.refetch();
-        }}
-        isRetrying={
-          userQuery.isFetching ||
-          tenantQuery.isFetching ||
-          businessesQuery.isFetching
-        }
-      />
-    );
-  }
-
-  const user = userQuery.data;
-  const tenant = tenantQuery.data;
-  const businesses = businessesQuery.data ?? [];
+  const upcomingDeadlines = events
+    .filter((e) => e.type === "deadline")
+    .slice(0, 3);
+  const todayTasks = projects
+    .filter(
+      (p) =>
+        p.deadline &&
+        new Date(p.deadline) <= new Date(Date.now() + 86400000 * 3),
+    )
+    .slice(0, 4);
 
   return (
     <div className="space-y-10">
       <section>
-        <p className="type-label text-accent mb-3">Workspace</p>
+        <p className="type-label text-accent mb-2">Agency OS</p>
         <h1 className="type-display-md text-foreground font-[family-name:var(--font-display)] tracking-tight">
-          Welcome back
-          {user?.firstName ? `, ${user.firstName}` : ""}
+          Dashboard
         </h1>
-        <p className="type-body-lg text-foreground-muted mt-3 max-w-2xl">
-          Build premium websites with components, themes, and templates.
+        <p className="type-body-lg text-foreground-muted mt-2">
+          Website projects, enquiries, and client work — all in one place.
         </p>
-        <Button asChild className="mt-6" size="lg">
-          <Link href="/app/compose">
-            <Sparkles className="size-4" aria-hidden />
-            Start composing
-          </Link>
+      </section>
+
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <StatCard
+          label="New Enquiries"
+          value={stats?.newEnquiries ?? 0}
+          icon={Inbox}
+          gradient="from-blue-500/20 to-blue-500/5"
+        />
+        <StatCard
+          label="In Progress"
+          value={stats?.projectsInProgress ?? 0}
+          icon={Sparkles}
+          gradient="from-violet-500/20 to-violet-500/5"
+        />
+        <StatCard
+          label="Completed This Month"
+          value={stats?.completedThisMonth ?? 0}
+          icon={CheckCircle2}
+          gradient="from-emerald-500/20 to-emerald-500/5"
+        />
+        <StatCard
+          label="Maintenance"
+          value={stats?.maintenanceClients ?? 0}
+          icon={Wrench}
+          gradient="from-cyan-500/20 to-cyan-500/5"
+        />
+        <StatCard
+          label="Revenue"
+          value={stats?.revenuePlaceholder ?? "—"}
+          hint="Placeholder"
+          icon={IndianRupee}
+          gradient="from-amber-500/20 to-amber-500/5"
+        />
+      </section>
+
+      <section className="flex flex-wrap gap-3">
+        <Button onClick={() => setNewProjectOpen(true)}>
+          <Plus className="size-4" />
+          Create Manual Project
+        </Button>
+        <Button asChild variant="outline">
+          <Link href="/app/clients">Add Client</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link href="/app/assets">Open Asset Library</Link>
         </Button>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2">
-        <div className="surface-2 border-border rounded-[var(--radius-2xl)] border p-6">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="bg-accent-muted flex size-10 items-center justify-center rounded-[var(--radius-lg)]">
-              <Building2 className="text-accent size-5" strokeWidth={1.75} />
-            </div>
-            <div>
-              <h2 className="type-heading-sm font-medium">Account</h2>
-              <p className="type-body-sm text-foreground-muted">
-                {user?.email}
-              </p>
-            </div>
+      <div className="grid gap-8 lg:grid-cols-2">
+        <section className="surface-2 border-border rounded-[var(--radius-2xl)] border p-6">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="type-heading-sm font-medium">Recent Activity</h2>
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/app/activity">View all</Link>
+            </Button>
           </div>
-          {user?.role && <Badge variant="default">{user.role}</Badge>}
-        </div>
-
-        <div className="surface-2 border-border rounded-[var(--radius-2xl)] border p-6">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="bg-accent-muted flex size-10 items-center justify-center rounded-[var(--radius-lg)]">
-              <Globe2 className="text-accent size-5" strokeWidth={1.75} />
-            </div>
-            <div>
-              <h2 className="type-heading-sm font-medium">Tenant</h2>
-              <p className="type-body-sm text-foreground-muted">
-                {tenant?.name ?? "Current workspace"}
-              </p>
-            </div>
-          </div>
-          {tenant?.plan && <Badge variant="outline">{tenant.plan}</Badge>}
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h2 className="type-heading-md font-medium">Your businesses</h2>
-            <p className="type-body-sm text-foreground-muted mt-1">
-              {businesses.length} business{businesses.length === 1 ? "" : "es"}
-            </p>
-          </div>
-          <Button asChild variant="outline">
-            <Link href="/app/businesses">View all</Link>
-          </Button>
-        </div>
-
-        {businessesQuery.isFetching && !businesses.length ? (
-          <QueryLoadingState label="Loading businesses…" />
-        ) : businesses.length === 0 ? (
-          <QueryEmptyState
-            title="No businesses yet"
-            description="Once businesses are added to your workspace, they will appear here."
+          <ProjectTimeline
+            events={activity.map((a) => ({
+              id: a.id,
+              projectId: a.projectId ?? "",
+              type: a.type,
+              message: a.projectName
+                ? `${a.message} — ${a.projectName}`
+                : a.message,
+              contributor: a.contributor,
+              timestamp: a.timestamp,
+            }))}
           />
-        ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
-            {businesses.slice(0, 4).map((business) => (
-              <Link
-                key={business.id}
-                href={`/app/businesses/${business.id}`}
-                className="surface-2 hover:border-border-strong group border-border rounded-[var(--radius-2xl)] border p-6 transition-colors"
-              >
-                <h3 className="type-heading-sm group-hover:text-accent font-medium transition-colors">
-                  {business.name}
-                </h3>
-                {business.industry && (
-                  <p className="type-body-sm text-foreground-muted mt-2">
-                    {business.industry}
-                  </p>
-                )}
-                {business.status && (
-                  <Badge className="mt-4" variant="default">
-                    {business.status}
-                  </Badge>
-                )}
-              </Link>
-            ))}
+        </section>
+
+        <section className="space-y-6">
+          <div className="surface-2 border-border rounded-[var(--radius-2xl)] border p-6">
+            <div className="mb-4 flex items-center gap-2">
+              <Calendar className="text-accent size-4" />
+              <h2 className="type-heading-sm font-medium">
+                Upcoming Deadlines
+              </h2>
+            </div>
+            <ul className="space-y-3">
+              {upcomingDeadlines.map((e) => (
+                <li
+                  key={e.id}
+                  className="type-body-sm flex justify-between gap-2 border-b border-[var(--color-border-subtle)] pb-3 last:border-0"
+                >
+                  <span>{e.title}</span>
+                  <span className="text-foreground-muted shrink-0">
+                    {new Date(e.date).toLocaleDateString()}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
-        )}
+
+          <div className="surface-2 border-border rounded-[var(--radius-2xl)] border p-6">
+            <h2 className="type-heading-sm mb-4 font-medium">
+              Today&apos;s Tasks
+            </h2>
+            {todayTasks.length === 0 ? (
+              <p className="type-body-sm text-foreground-muted">
+                No urgent deadlines.
+              </p>
+            ) : (
+              <ul className="space-y-2">
+                {todayTasks.map((p) => (
+                  <li key={p.id}>
+                    <Link
+                      href={`/app/projects/${p.id}`}
+                      className="type-body-sm hover:text-accent flex justify-between"
+                    >
+                      {p.businessName}
+                      <span className="text-foreground-muted">
+                        {p.deadline &&
+                          new Date(p.deadline).toLocaleDateString()}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
+      </div>
+
+      <section className="surface-2 border-border rounded-[var(--radius-2xl)] border p-6">
+        <h2 className="type-heading-sm mb-4 font-medium">Project Progress</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            {
+              label: "Enquiries",
+              count: projects.filter((p) => p.status === "new-enquiry").length,
+              color: "bg-blue-500",
+            },
+            {
+              label: "Active",
+              count: projects.filter((p) =>
+                ["planning", "design", "development", "review"].includes(
+                  p.status,
+                ),
+              ).length,
+              color: "bg-violet-500",
+            },
+            {
+              label: "Waiting",
+              count: projects.filter((p) => p.status === "waiting-for-client")
+                .length,
+              color: "bg-amber-500",
+            },
+            {
+              label: "Done",
+              count: projects.filter((p) => p.status === "completed").length,
+              color: "bg-emerald-500",
+            },
+          ].map((bar) => (
+            <div key={bar.label}>
+              <div className="mb-2 flex justify-between">
+                <span className="type-body-sm">{bar.label}</span>
+                <span className="type-body-sm font-medium">{bar.count}</span>
+              </div>
+              <div className="bg-muted h-2 overflow-hidden rounded-full">
+                <motion.div
+                  className={`h-full rounded-full ${bar.color}`}
+                  initial={{ width: 0 }}
+                  animate={{
+                    width: `${Math.min(100, (bar.count / Math.max(projects.length, 1)) * 100)}%`,
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
+
+      <NewProjectModal
+        open={newProjectOpen}
+        onOpenChange={setNewProjectOpen}
+        onSubmit={(input) => {
+          createProject(input);
+          addToast({ title: "Project created", variant: "success" });
+        }}
+      />
     </div>
   );
 }

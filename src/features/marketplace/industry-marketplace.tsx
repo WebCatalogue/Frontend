@@ -12,7 +12,7 @@ import { PageSection } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants";
 import { getCategoriesForIndustry } from "./categories";
-import { buildComposeSections, getDefaultSelections } from "./catalog";
+import { getDefaultSelections } from "./catalog";
 import { CategoryGallery } from "./category-gallery";
 import { YourWebsitePanel } from "./your-website-panel";
 import { AssembledWebsitePreview } from "./assembled-preview";
@@ -68,16 +68,9 @@ export function IndustryMarketplace({
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  const handleCompose = useCallback(() => {
-    const sections = buildComposeSections(selections, categoryIds).join(",");
-    const params = new URLSearchParams({
-      industry: industrySlug,
-      sections,
-      palette: activePaletteId,
-      theme: themeId,
-    });
-    router.push(`${ROUTES.appCompose}?${params.toString()}`);
-  }, [selections, categoryIds, industrySlug, activePaletteId, themeId, router]);
+  const handleEnquiry = useCallback(() => {
+    router.push(ROUTES.enquiry);
+  }, [router]);
 
   const previewIsSelected = previewOptionId
     ? Object.values(selections).includes(previewOptionId)
@@ -136,7 +129,7 @@ export function IndustryMarketplace({
               categories={categories}
               selections={selections}
               onJumpToCategory={jumpToCategory}
-              onCompose={handleCompose}
+              onCompose={handleEnquiry}
               industryName={industryName}
             />
           </div>
@@ -166,11 +159,11 @@ export function IndustryMarketplace({
         />
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button variant="primary" size="lg" onClick={handleCompose}>
-            Continue in composer
+          <Button variant="primary" size="lg" onClick={handleEnquiry}>
+            Submit enquiry
           </Button>
           <Button variant="outline" size="lg" asChild>
-            <Link href={ROUTES.contact}>Talk to us first</Link>
+            <Link href={ROUTES.visualise}>Visualise your site</Link>
           </Button>
         </div>
       </PageSection>
@@ -179,9 +172,9 @@ export function IndustryMarketplace({
         <Button
           variant="primary"
           className="w-full shadow-lg"
-          onClick={handleCompose}
+          onClick={handleEnquiry}
         >
-          Open in composer ({Object.keys(selections).length} sections)
+          Submit enquiry ({Object.keys(selections).length} sections)
         </Button>
       </div>
 

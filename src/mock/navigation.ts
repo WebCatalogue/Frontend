@@ -1,27 +1,26 @@
 import { ROUTES } from "@/constants";
 
+/** Public navigation — agency-facing site only (no login/dashboard links) */
 export const MAIN_NAV = [
-  { label: "Services", href: ROUTES.services, mega: "services" as const },
-  { label: "Industries", href: ROUTES.industries, mega: "industries" as const },
-  { label: "Portfolio", href: ROUTES.portfolio },
-  { label: "Pricing", href: ROUTES.pricing },
-  { label: "About", href: ROUTES.about },
-  { label: "Blog", href: ROUTES.blog },
+  { label: "Industries", href: ROUTES.industries },
+  { label: "Templates", href: ROUTES.templates },
+  { label: "Visualise", href: ROUTES.visualise },
+  { label: "Contact", href: ROUTES.contact },
 ] as const;
 
 export const FOOTER_NAV = {
   company: [
-    { label: "About", href: ROUTES.about },
-    { label: "Portfolio", href: ROUTES.portfolio },
-    { label: "Pricing", href: ROUTES.pricing },
+    { label: "Industries", href: ROUTES.industries },
+    { label: "Templates", href: ROUTES.templates },
+    { label: "Visualise Your Site", href: ROUTES.visualise },
+    { label: "Submit Enquiry", href: ROUTES.enquiry },
     { label: "Contact", href: ROUTES.contact },
-    { label: "Blog", href: ROUTES.blog },
   ],
   services: [
-    { label: "Business Websites", href: ROUTES.services },
-    { label: "Website Catalogue", href: ROUTES.services },
-    { label: "Landing Pages", href: ROUTES.services },
-    { label: "Website Redesign", href: ROUTES.services },
+    { label: "Café & Restaurant", href: "/industries/cafe" },
+    { label: "Salon & Beauty", href: "/industries/salon" },
+    { label: "Gym & Fitness", href: "/industries/gym" },
+    { label: "Clinic & Medical", href: "/industries/clinic" },
   ],
   legal: [
     { label: "Privacy Policy", href: ROUTES.privacy },

@@ -6,5 +6,7 @@ export * as tenantApi from "./tenant";
 export * as pagesApi from "./pages";
 export * as mediaApi from "./media";
 export * as builderApi from "./builder";
+export * as businessDataApi from "./business-data";
+export * as registriesApi from "./registries";
 export * as navigationApi from "./navigation";
 export * as seoApi from "./seo";

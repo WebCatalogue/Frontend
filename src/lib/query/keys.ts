@@ -25,9 +25,16 @@ export const queryKeys = {
     sections: (id: string) => ["pages", id, "sections"] as const,
   },
   media: {
+    all: ["media"] as const,
     detail: (id: string) => ["media", id] as const,
   },
   builder: {
     registry: ["builder", "components"] as const,
+    component: (key: string) => ["builder", "components", key] as const,
+    registries: ["builder", "registries"] as const,
+  },
+  businessData: {
+    collection: (websiteId: string, collection: string) =>
+      ["websites", websiteId, "data", collection] as const,
   },
 } as const;

@@ -4,52 +4,60 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  FolderKanban,
+  Activity,
   BarChart3,
   Bell,
-  Building2,
+  Calendar,
+  CheckCircle2,
   ChevronRight,
+  Clock,
   Command,
-  Globe2,
   Image,
+  Inbox,
+  Kanban,
   LayoutDashboard,
+  LayoutTemplate,
   LogOut,
   Menu,
-  Palette,
-  Puzzle,
   Search,
   Settings,
-  Sparkles,
   Users,
+  Wrench,
   X,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { APP_NAME, ROUTES } from "@/constants";
-import { getRoleLabel, isSuperAdmin } from "@/lib/auth/roles";
+import { getRoleLabel } from "@/lib/auth/roles";
 import { useAuth } from "@/providers/auth-provider";
 import { cn } from "@/lib/utils";
 import { CommandPalette } from "./command-palette";
 import { DashboardBreadcrumbs } from "./dashboard-breadcrumbs";
+import { DevModeBanner } from "@/components/auth/dev-mode-banner";
 
 interface NavItem {
   href: string;
   label: string;
   icon: LucideIcon;
   exact?: boolean;
-  adminOnly?: boolean;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/app", label: "Overview", icon: LayoutDashboard, exact: true },
-  { href: "/app/compose", label: "Compose", icon: Sparkles },
-  { href: "/app/businesses", label: "Businesses", icon: Building2 },
-  { href: "/app/websites", label: "Websites", icon: Globe2 },
-  { href: "/app/assets", label: "Assets", icon: Puzzle },
-  { href: "/app/themes", label: "Themes", icon: Palette },
-  { href: "/app/media", label: "Media", icon: Image },
-  { href: "/app/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/app/team", label: "Team", icon: Users, adminOnly: true },
-  { href: "/app/settings", label: "Settings", icon: Settings },
+  { href: ROUTES.app, label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: ROUTES.appEnquiries, label: "New Enquiries", icon: Inbox },
+  { href: ROUTES.appTodo, label: "Our To-Do", icon: Kanban },
+  { href: ROUTES.appProjects, label: "Active Projects", icon: FolderKanban },
+  { href: ROUTES.appWaiting, label: "Waiting For Client", icon: Clock },
+  { href: ROUTES.appCompleted, label: "Completed", icon: CheckCircle2 },
+  { href: ROUTES.appMaintenance, label: "Maintenance", icon: Wrench },
+  { href: ROUTES.appClients, label: "Clients", icon: Users },
+  { href: ROUTES.appCalendar, label: "Calendar", icon: Calendar },
+  { href: ROUTES.appActivity, label: "Activity", icon: Activity },
+  { href: ROUTES.appTemplates, label: "Templates", icon: LayoutTemplate },
+  { href: ROUTES.appAssets, label: "Assets", icon: Image },
+  { href: ROUTES.appAnalytics, label: "Analytics", icon: BarChart3 },
+  { href: ROUTES.appSettings, label: "Settings", icon: Settings },
 ];
 
 interface DashboardLayoutProps {
@@ -62,7 +70,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const admin = isSuperAdmin(user?.role);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -74,8 +81,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
-
-  const visibleNav = NAV_ITEMS.filter((item) => !item.adminOnly || admin);
 
   if (pathname.includes("/builder")) {
     return <>{children}</>;
@@ -101,7 +106,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       >
         <div className="flex h-16 items-center justify-between border-b px-5">
           <Link
-            href="/app"
+            href={ROUTES.app}
             className="type-heading-sm font-medium tracking-tight"
           >
             {APP_NAME}
@@ -116,8 +121,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </button>
         </div>
 
-        <nav className="flex-1 space-y-1 p-4" aria-label="Main">
-          {visibleNav.map(({ href, label, icon: Icon, exact }) => {
+        <nav
+          className="flex-1 space-y-0.5 overflow-y-auto p-3"
+          aria-label="Main"
+        >
+          {NAV_ITEMS.map(({ href, label, icon: Icon, exact }) => {
             const active = exact
               ? pathname === href
               : pathname.startsWith(href);
@@ -127,7 +135,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 href={href}
                 onClick={() => setSidebarOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 rounded-[var(--radius-lg)] px-3 py-2.5 text-sm transition-colors",
+                  "flex items-center gap-3 rounded-[var(--radius-lg)] px-3 py-2 text-sm transition-colors",
                   active
                     ? "bg-accent-muted text-foreground font-medium"
                     : "text-foreground-muted hover:bg-muted/60 hover:text-foreground",
@@ -178,7 +186,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             aria-label="Open command palette"
           >
             <Search className="size-4 shrink-0" aria-hidden />
-            <span className="truncate">Search businesses, websites…</span>
+            <span className="truncate">Search projects, clients…</span>
             <kbd className="border-border ml-auto hidden rounded border px-1.5 py-0.5 text-[10px] lg:inline">
               <Command className="mr-0.5 inline size-3" aria-hidden />K
             </kbd>
@@ -187,9 +195,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="ml-auto flex items-center gap-2">
             <Link
               href={ROUTES.home}
-              className="type-body-sm text-foreground-muted hover:text-foreground hidden sm:inline"
+              className="type-body-sm text-foreground-muted hover:text-foreground hidden md:inline"
             >
-              Marketing site
+              Public site
             </Link>
 
             <Button
@@ -261,6 +269,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </div>
 
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
+      <DevModeBanner />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BUSINESS_DATA_SOURCES } from "./datasets";
+import { BusinessDataEditor } from "./business-data-editor";
 import type { BusinessDataType } from "./types";
 
 interface BusinessDataPanelProps {
@@ -12,14 +13,25 @@ interface BusinessDataPanelProps {
 
 export function BusinessDataPanel({ websiteId }: BusinessDataPanelProps) {
   const [selected, setSelected] = useState<BusinessDataType | null>(null);
+  const [editing, setEditing] = useState(false);
   const source = BUSINESS_DATA_SOURCES.find((s) => s.id === selected);
+
+  if (editing && source) {
+    return (
+      <div className="space-y-4">
+        <Button variant="ghost" size="sm" onClick={() => setEditing(false)}>
+          ← Back to collections
+        </Button>
+        <BusinessDataEditor websiteId={websiteId} source={source} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
       <p className="type-body-sm text-foreground-muted">
-        Visual editors for dynamic content. Connects to backend data APIs when
-        available for site{" "}
-        <span className="font-mono text-xs">{websiteId.slice(0, 8)}…</span>
+        Manage dynamic content for your website sections. Changes autosave to
+        the backend.
       </p>
 
       <div className="space-y-2">
@@ -39,9 +51,7 @@ export function BusinessDataPanel({ websiteId }: BusinessDataPanelProps) {
                 <span aria-hidden>{ds.icon}</span>
                 <span className="type-body-sm font-medium">{ds.name}</span>
               </div>
-              <Badge variant={ds.apiAvailable ? "success" : "outline"}>
-                {ds.apiAvailable ? "API ready" : "Coming soon"}
-              </Badge>
+              <Badge variant="success">Live API</Badge>
             </div>
             <p className="type-body-sm text-foreground-muted mt-1 line-clamp-2">
               {ds.description}
@@ -53,33 +63,19 @@ export function BusinessDataPanel({ websiteId }: BusinessDataPanelProps) {
       {source && (
         <div className="border-t pt-4">
           <h3 className="type-body-sm mb-2 font-medium">{source.name}</h3>
-          {!source.apiAvailable && (
-            <p className="type-body-sm text-foreground-muted border-border mb-4 rounded-md border border-dashed p-3">
-              Backend endpoint{" "}
-              <code className="text-xs">GET {source.apiEndpoint}</code> is not
-              available yet. Visual editor will activate when the API ships.
-            </p>
-          )}
-          <ul className="mb-3 space-y-1">
-            {source.fields.map((f) => (
-              <li
-                key={f.key}
-                className="type-body-sm text-foreground-muted flex gap-2"
-              >
-                <span className="text-foreground-subtle font-mono text-xs">
-                  {f.key}
-                </span>
-                <span>{f.label}</span>
-              </li>
-            ))}
-          </ul>
+          <p className="type-body-sm text-foreground-muted mb-4">
+            Endpoint:{" "}
+            <code className="text-xs">
+              {source.apiEndpoint.replace(":id", websiteId.slice(0, 8) + "…")}
+            </code>
+          </p>
           <Button
-            variant="outline"
+            variant="primary"
             size="sm"
             className="w-full"
-            disabled={!source.apiAvailable}
+            onClick={() => setEditing(true)}
           >
-            {source.apiAvailable ? "Open editor" : "Coming soon"}
+            Open editor
           </Button>
         </div>
       )}

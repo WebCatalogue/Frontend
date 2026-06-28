@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { DevCredentialsPanel } from "@/components/auth/dev-credentials-panel";
 import { Button, Input, useToast } from "@/components/ui";
 import { APP_NAME, APP_TAGLINE, ROUTES } from "@/constants";
 import { getErrorMessage } from "@/lib/errors/api-error";
-import { hasAuthSession } from "@/lib/auth/session";
 import { useAuth } from "@/providers/auth-provider";
 
 export default function LoginPage() {
@@ -21,7 +21,7 @@ export default function LoginPage() {
   );
 
   useEffect(() => {
-    if (isInitialized && (isAuthenticated || hasAuthSession())) {
+    if (isInitialized && isAuthenticated) {
       router.replace("/app");
     }
   }, [isAuthenticated, isInitialized, router]);
@@ -32,18 +32,16 @@ export default function LoginPage() {
     const nextErrors: { email?: string; password?: string } = {};
     if (!email.trim()) nextErrors.email = "Email is required.";
     if (!password) nextErrors.password = "Password is required.";
-    else if (password.length < 8) {
-      nextErrors.password = "Password must be at least 8 characters.";
-    }
 
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
     setIsSubmitting(true);
     try {
-      await login({ email, password });
+      const user = await login({ email, password });
+      const firstName = user.firstName ?? user.name?.split(" ")[0] ?? "there";
       addToast({
-        title: "Welcome back",
+        title: `Welcome back ${firstName} 👋`,
         description: "You are now signed in.",
         variant: "success",
       });
@@ -57,6 +55,12 @@ export default function LoginPage() {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  function handleFillCredentials(fillEmail: string, fillPassword: string) {
+    setEmail(fillEmail);
+    setPassword(fillPassword);
+    setErrors({});
   }
 
   return (
@@ -79,7 +83,7 @@ export default function LoginPage() {
             Sign in
           </h1>
           <p className="type-body-sm text-foreground-muted mt-2">
-            Access your businesses, websites, and workspace.
+            Internal team access for Aarush and Garvit.
           </p>
 
           <form className="mt-8 space-y-5" onSubmit={handleSubmit} noValidate>
@@ -90,7 +94,7 @@ export default function LoginPage() {
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               error={errors.email}
-              placeholder="you@business.com"
+              placeholder="you@bhaikisite.dev"
               required
             />
             <Input
@@ -112,6 +116,8 @@ export default function LoginPage() {
               Sign in
             </Button>
           </form>
+
+          <DevCredentialsPanel onFill={handleFillCredentials} />
         </div>
 
         <p className="type-body-sm text-foreground-muted mt-6 text-center">

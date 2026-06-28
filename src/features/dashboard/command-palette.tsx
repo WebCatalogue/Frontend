@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Building2, Globe2, Search } from "lucide-react";
+import { Building2, Search, Users } from "lucide-react";
 import {
   Modal,
   ModalContent,
@@ -10,45 +10,86 @@ import {
   ModalTitle,
 } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
-import { useBusinesses } from "@/hooks/use-api-queries";
+import { useAgencyStore } from "@/features/agency";
+import { ROUTES } from "@/constants";
 
 interface CommandPaletteProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+const QUICK_LINKS = [
+  { title: "Dashboard", href: ROUTES.app, subtitle: "Agency overview" },
+  {
+    title: "New Enquiries",
+    href: ROUTES.appEnquiries,
+    subtitle: "Incoming leads",
+  },
+  { title: "Our To-Do", href: ROUTES.appTodo, subtitle: "Kanban board" },
+  { title: "Clients", href: ROUTES.appClients, subtitle: "CRM" },
+  {
+    title: "Calendar",
+    href: ROUTES.appCalendar,
+    subtitle: "Meetings & deadlines",
+  },
+] as const;
+
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const [query, setQuery] = useState("");
-  const businessesQuery = useBusinesses();
+  const { projects, clients, isLoading } = useAgencyStore();
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const businesses = businessesQuery.data ?? [];
+
     if (!q) {
-      return businesses.slice(0, 6).map((b) => ({
-        type: "business" as const,
-        id: b.id,
-        title: b.name,
-        href: `/app/businesses/${b.id}`,
-        subtitle: b.industry ?? "Business",
-      }));
+      return [
+        ...QUICK_LINKS.map((l) => ({
+          type: "link" as const,
+          ...l,
+          id: l.href,
+        })),
+        ...projects.slice(0, 4).map((p) => ({
+          type: "project" as const,
+          id: p.id,
+          title: p.businessName,
+          href: `${ROUTES.appProjects}/${p.id}`,
+          subtitle: p.industry,
+        })),
+      ];
     }
 
-    return businesses
+    const projectHits = projects
       .filter(
-        (b) =>
-          b.name.toLowerCase().includes(q) ||
-          b.industry?.toLowerCase().includes(q),
+        (p) =>
+          p.businessName.toLowerCase().includes(q) ||
+          p.industry.toLowerCase().includes(q),
       )
-      .slice(0, 8)
-      .map((b) => ({
-        type: "business" as const,
-        id: b.id,
-        title: b.name,
-        href: `/app/businesses/${b.id}`,
-        subtitle: b.industry ?? "Business",
+      .slice(0, 5)
+      .map((p) => ({
+        type: "project" as const,
+        id: p.id,
+        title: p.businessName,
+        href: `${ROUTES.appProjects}/${p.id}`,
+        subtitle: p.industry,
       }));
-  }, [businessesQuery.data, query]);
+
+    const clientHits = clients
+      .filter(
+        (c) =>
+          c.businessName.toLowerCase().includes(q) ||
+          c.ownerName.toLowerCase().includes(q),
+      )
+      .slice(0, 4)
+      .map((c) => ({
+        type: "client" as const,
+        id: c.id,
+        title: c.businessName,
+        href: `${ROUTES.appClients}/${c.id}`,
+        subtitle: c.ownerName,
+      }));
+
+    return [...projectHits, ...clientHits];
+  }, [clients, projects, query]);
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
@@ -63,7 +104,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search businesses…"
+              placeholder="Search projects, clients…"
               className="pl-10"
               autoFocus
               aria-label="Search command palette"
@@ -72,13 +113,13 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
         </ModalHeader>
 
         <div className="max-h-80 overflow-y-auto p-2" role="listbox">
-          {businessesQuery.isLoading && (
+          {isLoading && (
             <p className="type-body-sm text-foreground-muted px-3 py-4">
               Loading…
             </p>
           )}
 
-          {!businessesQuery.isLoading && results.length === 0 && (
+          {!isLoading && results.length === 0 && (
             <p className="type-body-sm text-foreground-muted px-3 py-4">
               No results found.
             </p>
@@ -86,16 +127,16 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
           {results.map((item) => (
             <Link
-              key={item.id}
+              key={`${item.type}-${item.id}`}
               href={item.href}
               role="option"
               onClick={() => onOpenChange(false)}
               className="hover:bg-muted/60 flex items-center gap-3 rounded-[var(--radius-lg)] px-3 py-2.5 transition-colors"
             >
-              {item.type === "business" ? (
-                <Building2 className="text-accent size-4" aria-hidden />
+              {item.type === "client" ? (
+                <Users className="text-accent size-4" aria-hidden />
               ) : (
-                <Globe2 className="text-accent size-4" aria-hidden />
+                <Building2 className="text-accent size-4" aria-hidden />
               )}
               <div className="min-w-0">
                 <p className="type-body-sm truncate font-medium">

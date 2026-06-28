@@ -186,3 +186,8 @@ export function getPropertySchema(componentKey: string): PropertyFieldSchema[] {
     ]
   );
 }
+
+export {
+  resolvePropertySchemaFromComponent,
+  getComponentDefinition,
+} from "./schema-resolver";
