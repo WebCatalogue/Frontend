@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { APP_NAME } from "@/constants";
 import { cn } from "@/lib/utils";
+import { BrandWordmark } from "./brand-wordmark";
 
 export const BRAND_LOGO = {
   dark: "/brand/logo-dark.png",
@@ -21,9 +22,9 @@ interface LogoProps {
 }
 
 const SIZE_CLASSES = {
-  sm: "size-8",
-  md: "size-9",
-  lg: "size-11",
+  sm: "size-9",
+  md: "size-10",
+  lg: "size-12",
 } as const;
 
 export function Logo({
@@ -50,27 +51,16 @@ export function Logo({
         alt={`${APP_NAME} logo`}
         width={44}
         height={44}
-        className={cn(
-          "shrink-0 rounded-[22%] object-cover",
-          SIZE_CLASSES[size],
-          className,
-        )}
+        className={cn("shrink-0 object-contain", SIZE_CLASSES[size], className)}
         priority
       />
       {showWordmark && (
-        <span
-          className={cn(
-            "type-body-sm text-foreground font-medium tracking-tight",
-            wordmarkClassName,
-          )}
-        >
-          {APP_NAME}
-        </span>
+        <BrandWordmark size={size} className={wordmarkClassName} />
       )}
     </>
   );
 
-  const rootClassName = cn("group flex shrink-0 items-center gap-2.5");
+  const rootClassName = cn("group flex shrink-0 items-center gap-2");
 
   if (href) {
     return (

@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DevCredentialsPanel } from "@/components/auth/dev-credentials-panel";
-import { Logo } from "@/components/brand";
+import { BrandWordmark, Logo } from "@/components/brand";
 import { Button, Input, useToast } from "@/components/ui";
-import { APP_NAME, APP_TAGLINE, ROUTES } from "@/constants";
+import { APP_TAGLINE, ROUTES } from "@/constants";
 import { getErrorMessage } from "@/lib/errors/api-error";
 import { useAuth } from "@/providers/auth-provider";
 
@@ -69,11 +69,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="mb-8 flex flex-col items-center text-center">
           <Logo href={ROUTES.home} size="lg" showWordmark={false} />
-          <Link
-            href={ROUTES.home}
-            className="type-heading-md text-foreground mt-4 inline-block font-medium"
-          >
-            {APP_NAME}
+          <Link href={ROUTES.home} className="mt-4 inline-block">
+            <BrandWordmark size="lg" />
           </Link>
           <p className="type-body-sm text-foreground-muted mt-2">
             {APP_TAGLINE}
@@ -124,7 +121,8 @@ export default function LoginPage() {
 
         <p className="type-body-sm text-foreground-muted mt-6 text-center">
           <Link href={ROUTES.home} className="text-accent hover:underline">
-            Back to {APP_NAME}
+            Back to{" "}
+            <BrandWordmark size="sm" className="inline-flex align-middle" />
           </Link>
         </p>
       </div>

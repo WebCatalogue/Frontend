@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/utils";
 import { HERO_EASE, PRODUCT_STEPS } from "./hero-motion";
@@ -30,17 +30,15 @@ export const HeroStepIndicator = memo(function HeroStepIndicator() {
     return () => window.clearInterval(id);
   }, [reduced]);
 
-  const currentLabel = PRODUCT_STEPS[activeIndex].label.replace(/\.$/, "");
-
   return (
     <motion.div
-      className="mt-8 w-full max-w-3xl sm:mt-10"
+      className="mt-8 w-full max-w-4xl sm:mt-10"
       initial={reduced ? false : { opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: HERO_EASE, delay: reduced ? 0 : 0.65 }}
     >
       <div
-        className="grid grid-cols-4 gap-2 sm:gap-4"
+        className="grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-4 sm:gap-4 md:gap-5"
         role="list"
         aria-label="How BhaiKiSite works"
       >
@@ -51,7 +49,7 @@ export const HeroStepIndicator = memo(function HeroStepIndicator() {
           return (
             <div key={step.id} role="listitem" className="min-w-0">
               <div
-                className="bg-foreground/12 relative h-[2px] w-full overflow-hidden rounded-full"
+                className="bg-foreground/20 relative h-[2px] w-full overflow-hidden rounded-full"
                 aria-hidden
               >
                 {isActive && (
@@ -79,13 +77,13 @@ export const HeroStepIndicator = memo(function HeroStepIndicator() {
 
               <motion.p
                 className={cn(
-                  "mt-3 text-[0.625rem] leading-snug sm:mt-4 sm:text-xs md:text-sm",
+                  "mt-3 text-sm leading-snug sm:mt-4 sm:text-base md:text-[1.0625rem]",
                   isActive
                     ? "text-foreground font-medium"
-                    : "text-foreground-subtle font-normal",
+                    : "text-foreground-muted font-normal",
                 )}
                 animate={{
-                  opacity: isActive ? 1 : 0.55,
+                  opacity: isActive ? 1 : 0.78,
                   y: isActive ? 0 : 1,
                 }}
                 transition={labelTransition}
@@ -95,22 +93,6 @@ export const HeroStepIndicator = memo(function HeroStepIndicator() {
             </div>
           );
         })}
-      </div>
-
-      <div className="mt-4 h-5 overflow-hidden sm:mt-5">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.p
-            key={activeIndex}
-            className="text-foreground-subtle text-center text-sm"
-            aria-live="polite"
-            initial={reduced ? false : { opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduced ? undefined : { opacity: 0, y: -6 }}
-            transition={{ duration: 0.45, ease: HERO_EASE }}
-          >
-            Step {currentLabel}
-          </motion.p>
-        </AnimatePresence>
       </div>
 
       <HeroButtons />

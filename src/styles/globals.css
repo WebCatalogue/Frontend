@@ -5,6 +5,31 @@
 
 /* ── Base ─────────────────────────────────────────────────── */
 
+.site-navbar-glass {
+  border-color: var(--nav-glass-border);
+  background: var(--nav-glass-bg);
+  box-shadow: var(--nav-glass-shadow);
+  transition:
+    background var(--duration-normal) var(--ease-out-expo),
+    border-color var(--duration-normal) var(--ease-out-expo),
+    box-shadow var(--duration-normal) var(--ease-out-expo);
+}
+
+.brand-wordmark {
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.brand-wordmark__lead {
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
+.brand-wordmark__tail {
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
 html {
   scroll-behavior: smooth;
   overflow-x: clip;

@@ -21,7 +21,7 @@ interface HeroButtonProps {
 
 export const HeroButtons = memo(function HeroButtons() {
   return (
-    <div className="mt-5 flex flex-col items-center justify-center gap-3 sm:mt-6 sm:flex-row">
+    <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:mt-8 sm:flex-row sm:gap-4">
       <MagneticButton href="/visualise" variant="primary">
         Visualise Your Website
       </MagneticButton>
@@ -72,7 +72,7 @@ const MagneticButton = memo(function MagneticButton({
         onMouseMove={handleMove}
         onMouseLeave={handleLeave}
         className={cn(
-          "relative inline-flex items-center justify-center gap-2 rounded-[var(--radius-xl)] px-7 py-3.5 text-[0.9375rem] font-medium transition-shadow duration-500",
+          "relative inline-flex items-center justify-center gap-2 rounded-[var(--radius-xl)] px-8 py-4 text-base font-medium transition-shadow duration-500 sm:text-[1.0625rem]",
           "focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
           variant === "primary"
             ? "bg-primary text-primary-foreground shadow-[0_8px_32px_rgba(17,17,16,0.08)] hover:shadow-[0_12px_48px_rgba(94,106,210,0.2)] dark:shadow-[0_8px_32px_rgba(255,255,255,0.12)] dark:hover:shadow-[0_12px_48px_rgba(94,106,210,0.25)]"

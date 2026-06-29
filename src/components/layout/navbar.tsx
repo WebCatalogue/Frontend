@@ -31,8 +31,7 @@ export function Navbar() {
     <header className="pointer-events-none fixed inset-x-0 top-0 z-[var(--z-index-sticky)]">
       <div
         className={cn(
-          "pointer-events-auto fixed left-1/2 flex -translate-x-1/2 items-center justify-between gap-4 rounded-[18px] border backdrop-blur-[12px]",
-          "border-[var(--nav-glass-border,rgba(255,255,255,0.06))] bg-[var(--nav-glass-bg,rgba(15,15,18,0.55))]",
+          "site-navbar-glass pointer-events-auto fixed left-1/2 flex -translate-x-1/2 items-center justify-between gap-4 rounded-[18px] border backdrop-blur-[12px]",
           isMobile
             ? "top-3 w-[calc(100vw-24px)] px-5 py-4"
             : "top-5 w-[min(1400px,calc(100vw-80px))] px-8 py-[18px]",
@@ -80,7 +79,7 @@ function NavbarInner({
             key={item.label}
             href={item.href}
             className={cn(
-              "type-body-sm hover:bg-muted/50 hover:text-foreground rounded-[var(--radius-md)] px-3 py-2 transition-colors",
+              "type-body-md hover:bg-muted/50 hover:text-foreground rounded-[var(--radius-md)] px-3 py-2 transition-colors",
               pathname === item.href
                 ? "text-foreground"
                 : "text-foreground-muted",
