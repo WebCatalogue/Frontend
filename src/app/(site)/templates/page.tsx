@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PageHeader, PageSection } from "@/components/layout";
 import { IndustryTemplateGrid } from "@/components/marketing/industry-template-grid";
+import { TemplateCategoryFilter } from "@/components/marketing/template-category-filter";
 import { Reveal } from "@/components/playground/motion/primitives";
 import { Button } from "@/components/ui";
 import { ROUTES } from "@/constants";
@@ -26,6 +27,13 @@ export default function PublicTemplatesPage() {
       />
 
       <PageSection>
+        <TemplateCategoryFilter
+          categories={featured.map((industry) => ({
+            slug: industry.slug,
+            name: industry.name,
+          }))}
+        />
+
         <div className="space-y-16">
           {featured.map((industry, i) => {
             const templates = getTemplatesForIndustry(industry.slug).slice(
@@ -34,27 +42,32 @@ export default function PublicTemplatesPage() {
             );
             return (
               <Reveal key={industry.id} delay={i * 0.05}>
-                <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <h2 className="type-heading-md font-medium">
-                      {industry.name}
-                    </h2>
-                    <p className="type-body-sm text-foreground-muted mt-1 max-w-xl">
-                      {industry.tagline}
-                    </p>
+                <section
+                  id={`templates-${industry.slug}`}
+                  className="scroll-mt-32"
+                >
+                  <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                      <h2 className="type-heading-md font-medium">
+                        {industry.name}
+                      </h2>
+                      <p className="type-body-sm text-foreground-muted mt-1 max-w-xl">
+                        {industry.tagline}
+                      </p>
+                    </div>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href={`/industries/${industry.slug}`}>
+                        View industry
+                      </Link>
+                    </Button>
                   </div>
-                  <Button variant="outline" size="sm" asChild>
-                    <Link href={`/industries/${industry.slug}`}>
-                      View industry
-                    </Link>
-                  </Button>
-                </div>
-                <div className="mt-6">
-                  <IndustryTemplateGrid
-                    templates={templates}
-                    industrySlug={industry.slug}
-                  />
-                </div>
+                  <div className="mt-6">
+                    <IndustryTemplateGrid
+                      templates={templates}
+                      industrySlug={industry.slug}
+                    />
+                  </div>
+                </section>
               </Reveal>
             );
           })}

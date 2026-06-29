@@ -2,24 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { ThemeToggle } from "@/components/shared";
 import { Button } from "@/components/ui";
 import { APP_NAME, ROUTES } from "@/constants";
+import { useIsMobile } from "@/hooks/use-media-query";
 import { MAIN_NAV } from "@/mock/navigation";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
+  const isMobile = useIsMobile();
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 24);
-    handler();
-    window.addEventListener("scroll", handler, { passive: true });
-    return () => window.removeEventListener("scroll", handler);
-  }, []);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -33,118 +27,163 @@ export function Navbar() {
   }, [mobileOpen]);
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-[var(--z-index-sticky)] transition-all duration-500 ease-[var(--ease-out-expo)]",
-        scrolled || mobileOpen
-          ? "border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-glass)] shadow-[0_1px_0_rgba(17,17,16,0.04)] backdrop-blur-xl backdrop-saturate-150"
-          : "bg-transparent",
-      )}
-    >
-      <div className="mx-auto flex h-14 max-w-[var(--container-2xl)] items-center justify-between gap-4 px-5 sm:h-16 sm:px-6 lg:px-12">
-        <Link
-          href={ROUTES.home}
-          className="group flex shrink-0 items-center gap-2.5"
-        >
-          <div className="bg-primary flex size-7 items-center justify-center rounded-full shadow-sm transition-shadow group-hover:shadow-md sm:size-8">
-            <span className="type-label text-primary-foreground !text-[0.5rem] sm:!text-[0.5625rem]">
-              A
-            </span>
-          </div>
-          <span className="type-body-sm text-foreground font-medium tracking-tight">
-            {APP_NAME}
-          </span>
-        </Link>
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-[var(--z-index-sticky)]">
+      <div
+        className={cn(
+          "pointer-events-auto fixed left-1/2 flex -translate-x-1/2 items-center justify-between gap-4 rounded-[18px] border backdrop-blur-[12px]",
+          "border-[var(--nav-glass-border,rgba(255,255,255,0.06))] bg-[var(--nav-glass-bg,rgba(15,15,18,0.55))]",
+          isMobile
+            ? "top-3 w-[calc(100vw-24px)] px-5 py-4"
+            : "top-5 w-[min(1400px,calc(100vw-80px))] px-8 py-[18px]",
+        )}
+      >
+        <NavbarInner
+          pathname={pathname}
+          mobileOpen={mobileOpen}
+          setMobileOpen={setMobileOpen}
+        />
+      </div>
 
-        <nav
-          className="hidden items-center gap-1 lg:flex"
-          aria-label="Main navigation"
+      {mobileOpen && (
+        <MobileMenu
+          pathname={pathname}
+          onNavigate={() => setMobileOpen(false)}
+          className="border-border bg-background pointer-events-auto fixed top-[calc(0.75rem+4.25rem)] right-3 left-3 rounded-[18px] border px-5 py-6 shadow-lg backdrop-blur-xl lg:hidden"
+        />
+      )}
+    </header>
+  );
+}
+
+interface NavbarInnerProps {
+  pathname: string;
+  mobileOpen: boolean;
+  setMobileOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+function NavbarInner({
+  pathname,
+  mobileOpen,
+  setMobileOpen,
+}: NavbarInnerProps) {
+  return (
+    <>
+      <Link
+        href={ROUTES.home}
+        className="group flex shrink-0 items-center gap-2.5"
+      >
+        <div className="bg-primary flex size-7 items-center justify-center rounded-full shadow-sm transition-shadow group-hover:shadow-md sm:size-8">
+          <span className="type-label text-primary-foreground !text-[0.5rem] sm:!text-[0.5625rem]">
+            A
+          </span>
+        </div>
+        <span className="type-body-sm text-foreground font-medium tracking-tight">
+          {APP_NAME}
+        </span>
+      </Link>
+
+      <nav
+        className="hidden items-center gap-1 lg:flex"
+        aria-label="Main navigation"
+      >
+        {MAIN_NAV.map((item) => (
+          <Link
+            key={item.label}
+            href={item.href}
+            className={cn(
+              "type-body-sm hover:bg-muted/50 hover:text-foreground rounded-[var(--radius-md)] px-3 py-2 transition-colors",
+              pathname === item.href
+                ? "text-foreground"
+                : "text-foreground-muted",
+            )}
+          >
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+
+      <div className="flex items-center gap-2 sm:gap-3">
+        <ThemeToggle className="hidden sm:flex" />
+        <Button
+          variant="primary"
+          size="sm"
+          className="hidden sm:inline-flex"
+          asChild
         >
-          {MAIN_NAV.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
+          <Link href={ROUTES.enquiry}>Submit enquiry</Link>
+        </Button>
+
+        <button
+          type="button"
+          className="text-foreground/80 hover:text-foreground flex size-10 items-center justify-center rounded-[var(--radius-md)] transition-colors lg:hidden"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-menu"
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+        >
+          <span className="relative block size-4">
+            <span
               className={cn(
-                "type-body-sm hover:bg-muted/50 hover:text-foreground rounded-[var(--radius-md)] px-3 py-2 transition-colors",
+                "absolute left-0 block h-0.5 w-4 bg-current transition-all duration-300",
+                mobileOpen ? "top-[7px] rotate-45" : "top-0.5",
+              )}
+            />
+            <span
+              className={cn(
+                "absolute top-[7px] left-0 block h-0.5 w-4 bg-current transition-all duration-300",
+                mobileOpen ? "opacity-0" : "opacity-100",
+              )}
+            />
+            <span
+              className={cn(
+                "absolute left-0 block h-0.5 w-4 bg-current transition-all duration-300",
+                mobileOpen ? "top-[7px] -rotate-45" : "top-3.5",
+              )}
+            />
+          </span>
+        </button>
+      </div>
+    </>
+  );
+}
+
+function MobileMenu({
+  pathname,
+  onNavigate,
+  className,
+}: {
+  pathname: string;
+  onNavigate: () => void;
+  className?: string;
+}) {
+  return (
+    <nav id="mobile-menu" className={className} aria-label="Mobile navigation">
+      <ul className="space-y-1">
+        {MAIN_NAV.map((item) => (
+          <li key={item.label}>
+            <Link
+              href={item.href}
+              onClick={onNavigate}
+              className={cn(
+                "type-body-md block rounded-[var(--radius-md)] px-3 py-3 transition-colors",
                 pathname === item.href
                   ? "text-foreground"
-                  : "text-foreground-muted",
+                  : "text-foreground-muted hover:text-foreground",
               )}
             >
               {item.label}
             </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-2 sm:gap-3">
-          <ThemeToggle className="hidden sm:flex" />
-          <Button
-            variant="primary"
-            size="sm"
-            className="hidden sm:inline-flex"
-            asChild
-          >
-            <Link href={ROUTES.enquiry}>Submit enquiry</Link>
-          </Button>
-
-          <button
-            type="button"
-            className="text-foreground-muted hover:text-foreground flex size-10 items-center justify-center rounded-[var(--radius-md)] transition-colors lg:hidden"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-menu"
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          >
-            <span className="relative block size-4">
-              <span
-                className={cn(
-                  "absolute left-0 block h-0.5 w-4 bg-current transition-all duration-300",
-                  mobileOpen ? "top-[7px] rotate-45" : "top-0.5",
-                )}
-              />
-              <span
-                className={cn(
-                  "absolute top-[7px] left-0 block h-0.5 w-4 bg-current transition-all duration-300",
-                  mobileOpen ? "opacity-0" : "opacity-100",
-                )}
-              />
-              <span
-                className={cn(
-                  "absolute left-0 block h-0.5 w-4 bg-current transition-all duration-300",
-                  mobileOpen ? "top-[7px] -rotate-45" : "top-3.5",
-                )}
-              />
-            </span>
-          </button>
-        </div>
+          </li>
+        ))}
+      </ul>
+      <div className="border-border mt-6 flex items-center gap-3 border-t pt-6">
+        <ThemeToggle />
+        <Button variant="primary" className="flex-1" asChild>
+          <Link href={ROUTES.enquiry} onClick={onNavigate}>
+            Submit enquiry
+          </Link>
+        </Button>
       </div>
-
-      {mobileOpen && (
-        <nav
-          id="mobile-menu"
-          className="border-t border-[var(--color-border-subtle)] bg-[var(--color-background)] px-5 py-6 lg:hidden"
-          aria-label="Mobile navigation"
-        >
-          <ul className="space-y-1">
-            {MAIN_NAV.map((item) => (
-              <li key={item.label}>
-                <Link
-                  href={item.href}
-                  className="type-body-md text-foreground-muted hover:text-foreground block rounded-[var(--radius-md)] px-3 py-3 transition-colors"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-6 flex items-center gap-3 border-t border-[var(--color-border-subtle)] pt-6">
-            <ThemeToggle />
-            <Button variant="primary" className="flex-1" asChild>
-              <Link href={ROUTES.enquiry}>Submit enquiry</Link>
-            </Button>
-          </div>
-        </nav>
-      )}
-    </header>
+    </nav>
   );
 }

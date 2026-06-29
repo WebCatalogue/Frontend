@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { VisualiseWizardDialog } from "./visualise-wizard-dialog";
 
@@ -28,7 +27,6 @@ export function VisualiseSiteButton({
         className={className}
         onClick={() => setOpen(true)}
       >
-        <Sparkles className="size-4" aria-hidden />
         Visualise Your Site
       </Button>
       <VisualiseWizardDialog

@@ -3,9 +3,10 @@ export const APP_TAGLINE = "Premium websites, built effortlessly.";
 export const APP_DESCRIPTION =
   "Allow businesses to create premium websites by combining reusable components, themes and templates.";
 
-export const COMPANY_EMAIL = "hello@bhaikisite.com";
-export const COMPANY_PHONE = "+91 98765 43210";
-export const COMPANY_WHATSAPP = "919876543210";
+export const COMPANY_EMAIL = "bhaikisite@gmail.com";
+export const COMPANY_PHONES = ["8527503955", "9354698918"] as const;
+export const COMPANY_PHONE = COMPANY_PHONES[0];
+export const COMPANY_WHATSAPP = "918527503955";
 export const COMPANY_ADDRESS = "Bengaluru, India";
 
 export const SOCIAL_LINKS = {

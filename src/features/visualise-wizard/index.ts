@@ -1,3 +1,4 @@
+export { VisualiseHeroVisual } from "./visualise-hero-visual";
 export { VisualiseSiteButton } from "./visualise-site-button";
 export { VisualiseWizardDialog } from "./visualise-wizard-dialog";
 export {

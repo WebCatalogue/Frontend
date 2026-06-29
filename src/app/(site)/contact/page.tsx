@@ -1,151 +1,58 @@
 "use client";
 
-import { MessageCircle, Mail, MapPin } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import { PageHeader, PageSection } from "@/components/layout";
+import { ContactForm } from "@/components/marketing/contact-form";
+import { ContactHeroVisual } from "@/components/marketing/contact-hero-visual";
 import { Reveal } from "@/components/playground/motion/primitives";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-  Button,
-  Input,
-  Textarea,
-  useToast,
 } from "@/components/ui";
-import {
-  COMPANY_ADDRESS,
-  COMPANY_EMAIL,
-  COMPANY_PHONE,
-  COMPANY_WHATSAPP,
-  SOCIAL_LINKS,
-} from "@/constants";
+import { COMPANY_EMAIL, COMPANY_PHONES } from "@/constants";
 import { CONTACT_FAQ } from "@/mock/testimonials";
 
 export default function ContactPage() {
-  const { addToast } = useToast();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    addToast({
-      title: "Message sent",
-      description: "We'll get back to you within 24 hours.",
-      variant: "success",
-    });
-  };
-
   return (
     <>
       <PageHeader
         eyebrow="Contact"
-        title="Let's build something remarkable."
-        description="Tell us about your business. We'll respond within 24 hours with next steps."
+        title={
+          <>
+            Let&apos;s start something{" "}
+            <span className="text-gradient-plum">great.</span>
+          </>
+        }
+        description="Share a few details and we'll get back to you within 24 hours with the right next steps."
         breadcrumbs={[{ label: "Contact" }]}
-      />
+        media={<ContactHeroVisual />}
+        mediaAlign="start"
+        className="contact-page-header"
+      >
+        <ContactForm />
 
-      <PageSection>
-        <div className="grid gap-12 lg:grid-cols-5 lg:gap-16">
-          <Reveal className="lg:col-span-3">
-            <form
-              onSubmit={handleSubmit}
-              className="depth-panel space-y-5 p-7 sm:p-10"
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-8">
+          <a
+            href={`mailto:${COMPANY_EMAIL}`}
+            className="type-body-sm text-foreground-muted hover:text-foreground inline-flex items-center gap-2 transition-colors"
+          >
+            <Mail className="size-4 shrink-0" aria-hidden />
+            {COMPANY_EMAIL}
+          </a>
+          {COMPANY_PHONES.map((phone) => (
+            <a
+              key={phone}
+              href={`tel:+91${phone}`}
+              className="type-body-sm text-foreground-muted hover:text-foreground inline-flex items-center gap-2 transition-colors"
             >
-              <div className="grid gap-5 sm:grid-cols-2">
-                <Input label="First name" placeholder="Priya" required />
-                <Input label="Last name" placeholder="Sharma" required />
-              </div>
-              <Input
-                label="Email"
-                type="email"
-                placeholder="you@business.com"
-                required
-              />
-              <Input label="Business name" placeholder="Harbor Coffee Co." />
-              <Textarea
-                label="Tell us about your project"
-                placeholder="What are you looking to build?"
-                rows={5}
-                required
-              />
-              <Button
-                variant="primary"
-                size="lg"
-                type="submit"
-                className="w-full sm:w-auto"
-              >
-                Send message
-              </Button>
-            </form>
-          </Reveal>
-
-          <Reveal delay={0.1} className="lg:col-span-2">
-            <div className="space-y-6">
-              <div className="depth-panel p-6">
-                <Mail className="text-accent size-5" strokeWidth={1.75} />
-                <p className="type-heading-sm text-foreground mt-4">Email</p>
-                <a
-                  href={`mailto:${COMPANY_EMAIL}`}
-                  className="type-body-md text-foreground-muted hover:text-accent mt-1 transition-colors"
-                >
-                  {COMPANY_EMAIL}
-                </a>
-              </div>
-              <div className="depth-panel p-6">
-                <MessageCircle
-                  className="text-accent size-5"
-                  strokeWidth={1.75}
-                />
-                <p className="type-heading-sm text-foreground mt-4">WhatsApp</p>
-                <a
-                  href={`https://wa.me/${COMPANY_WHATSAPP}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="type-body-md text-foreground-muted hover:text-accent mt-1 transition-colors"
-                >
-                  {COMPANY_PHONE}
-                </a>
-                <Button
-                  variant="accent"
-                  size="sm"
-                  className="mt-4 w-full"
-                  asChild
-                >
-                  <a
-                    href={`https://wa.me/${COMPANY_WHATSAPP}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Chat on WhatsApp
-                  </a>
-                </Button>
-              </div>
-              <div className="depth-panel p-6">
-                <MapPin className="text-accent size-5" strokeWidth={1.75} />
-                <p className="type-heading-sm text-foreground mt-4">Office</p>
-                <p className="type-body-md text-foreground-muted mt-1">
-                  {COMPANY_ADDRESS}
-                </p>
-              </div>
-              <div className="depth-panel p-6">
-                <p className="type-heading-sm text-foreground">Follow us</p>
-                <div className="mt-4 flex flex-wrap gap-3">
-                  {Object.entries(SOCIAL_LINKS).map(([name, url]) => (
-                    <a
-                      key={name}
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="type-body-sm text-foreground-muted hover:text-accent capitalize transition-colors"
-                    >
-                      {name}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </Reveal>
+              <Phone className="size-4 shrink-0" aria-hidden />
+              {phone}
+            </a>
+          ))}
         </div>
-      </PageSection>
+      </PageHeader>
 
       <PageSection subdued>
         <Reveal>
