@@ -5,7 +5,7 @@ import { ROUTES } from "@/constants";
 export function FooterCta() {
   return (
     <section
-      className="footer-cta relative flex min-h-[36rem] items-center justify-center overflow-hidden px-5 py-20 sm:min-h-[42rem] sm:px-6 sm:py-24 lg:min-h-[46rem] lg:px-12 lg:py-28"
+      className="footer-cta relative flex min-h-[36rem] items-center justify-center overflow-visible px-5 py-20 sm:min-h-[42rem] sm:px-6 sm:py-24 lg:min-h-[46rem] lg:px-12 lg:py-28"
       aria-labelledby="footer-cta-title"
     >
       <div className="footer-cta-glow footer-cta-glow--left" aria-hidden />
@@ -17,16 +17,16 @@ export function FooterCta() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/footer/footer-hand-top.png"
+          src="/footer/footer-hand-top.png?v=3"
           alt=""
-          className="footer-hand footer-hand--top"
+          className="footer-hand footer-hand--down"
           draggable={false}
         />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/footer/footer-hand-bottom.png"
+          src="/footer/footer-hand-bottom.png?v=3"
           alt=""
-          className="footer-hand footer-hand--bottom"
+          className="footer-hand footer-hand--up"
           draggable={false}
         />
       </div>

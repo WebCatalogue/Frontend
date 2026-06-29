@@ -751,35 +751,48 @@ body {
 
 .footer-cta {
   background: var(--color-background);
+  overflow: visible;
 }
 
 .footer-hands {
   z-index: 1;
+  overflow: visible;
 }
 
 .footer-hand {
   position: absolute;
+  display: block;
   height: auto;
   max-width: none;
   object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
   opacity: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.12));
 }
 
-.footer-hand--top {
-  top: -16%;
-  left: clamp(-4%, 0vw, 4%);
-  width: clamp(280px, 44vw, 560px);
+.dark .footer-hand {
+  filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.35));
+}
+
+/* Pointing-down hand — upper left */
+.footer-hand--down {
+  top: 4%;
+  left: -1%;
+  right: auto;
+  width: clamp(280px, 44vw, 520px);
   transform: rotate(-4deg);
   transform-origin: top left;
 }
 
-.footer-hand--bottom {
-  right: clamp(-4%, 0vw, 4%);
-  bottom: 10%;
-  width: clamp(260px, 42vw, 540px);
-  transform: rotate(6deg);
+/* Cupped-up hand — lower right */
+.footer-hand--up {
+  right: -1%;
+  left: auto;
+  bottom: 4%;
+  width: clamp(280px, 44vw, 520px);
+  transform: rotate(4deg);
   transform-origin: bottom right;
 }
 
@@ -823,15 +836,15 @@ body {
 }
 
 @media (max-width: 640px) {
-  .footer-hand--top {
-    top: -8%;
-    left: -12%;
-    width: 240px;
+  .footer-hand--down {
+    top: 6%;
+    left: -1.25rem;
+    width: 220px;
   }
 
-  .footer-hand--bottom {
-    right: -14%;
-    bottom: 8%;
+  .footer-hand--up {
+    right: -1.25rem;
+    bottom: 6%;
     width: 220px;
   }
 }

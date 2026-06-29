@@ -10,7 +10,7 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-background relative z-[2]">
+    <footer className="bg-background relative z-[2] overflow-visible">
       <FooterCta />
 
       <div className="mx-auto max-w-[var(--container-2xl)] px-5 pb-16 sm:px-6 lg:px-12 lg:pb-20">
