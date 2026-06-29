@@ -3,6 +3,8 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { BUILD_TIMELINE, HERO_EASE } from "./hero-motion";
+import { getHeroPreviewImages } from "./hero-preview-images";
+import { demoImage } from "@/lib/demo-images";
 
 interface SectionProps {
   show: boolean;
@@ -40,6 +42,7 @@ export const BrowserContent = memo(function BrowserContent({
   const t = BUILD_TIMELINE;
   const show = (mark: number) => elapsed >= mark;
   const accent = theme.gradient.match(/#[0-9A-Fa-f]{3,8}/g)?.[0] ?? "#5e6ad2";
+  const images = getHeroPreviewImages(theme.id);
 
   return (
     <div
@@ -84,15 +87,16 @@ export const BrowserContent = memo(function BrowserContent({
           <Section show={show(t.heroImage)} className="mt-3">
             <div
               className="relative aspect-[16/9] overflow-hidden"
-              style={{
-                background: theme.gradient,
-                borderRadius: theme.radius,
-              }}
+              style={{ borderRadius: theme.radius }}
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                key={`${theme.id}-hero`}
+                src={demoImage(images.hero, 720)}
+                alt=""
+                className="size-full object-cover"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-              <div className="absolute bottom-2 left-2 rounded bg-white/90 px-2 py-0.5 text-[0.5rem] font-medium text-[#111]">
-                Your hero image
-              </div>
             </div>
           </Section>
         </section>
@@ -101,16 +105,32 @@ export const BrowserContent = memo(function BrowserContent({
           show={show(t.about)}
           className="border-t border-[rgba(17,17,16,0.05)] px-4 py-3 sm:px-5"
         >
-          <h3
-            className="text-[0.7rem] font-medium text-[#111110] sm:text-[0.8rem]"
-            style={{ fontFamily: theme.displayFont }}
-          >
-            About us
-          </h3>
-          <p className="mt-1.5 text-[0.55rem] leading-relaxed text-[#6b6b68] sm:text-[0.6rem]">
-            A welcoming space designed with intention — every detail composed
-            from premium BhaiKiSite components.
-          </p>
+          <div className="flex gap-3">
+            <div className="min-w-0 flex-1">
+              <h3
+                className="text-[0.7rem] font-medium text-[#111110] sm:text-[0.8rem]"
+                style={{ fontFamily: theme.displayFont }}
+              >
+                About us
+              </h3>
+              <p className="mt-1.5 text-[0.55rem] leading-relaxed text-[#6b6b68] sm:text-[0.6rem]">
+                A welcoming space designed with intention — every detail
+                composed from premium BhaiKiSite components.
+              </p>
+            </div>
+            <div
+              className="relative h-14 w-20 shrink-0 overflow-hidden sm:h-16 sm:w-24"
+              style={{ borderRadius: theme.radius }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                key={`${theme.id}-about`}
+                src={demoImage(images.about, 320)}
+                alt=""
+                className="size-full object-cover"
+              />
+            </div>
+          </div>
         </Section>
 
         <Section show={show(t.gallery)} className="px-4 py-3 sm:px-5">
@@ -121,15 +141,19 @@ export const BrowserContent = memo(function BrowserContent({
             Gallery
           </h3>
           <div className="grid grid-cols-3 gap-1.5">
-            {[0, 1, 2].map((i) => (
+            {images.gallery.map((key, i) => (
               <div
-                key={i}
-                className="aspect-square rounded-md"
-                style={{
-                  background: `linear-gradient(135deg, ${accent}33, #f0f0ed)`,
-                  borderRadius: theme.radius,
-                }}
-              />
+                key={`${theme.id}-gallery-${i}`}
+                className="aspect-square overflow-hidden"
+                style={{ borderRadius: theme.radius }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={demoImage(key, 320)}
+                  alt=""
+                  className="size-full object-cover"
+                />
+              </div>
             ))}
           </div>
         </Section>

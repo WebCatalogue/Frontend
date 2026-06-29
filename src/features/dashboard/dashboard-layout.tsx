@@ -28,7 +28,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { APP_NAME, ROUTES } from "@/constants";
+import { Logo } from "@/components/brand";
+import { ROUTES } from "@/constants";
 import { getRoleLabel } from "@/lib/auth/roles";
 import { useAuth } from "@/providers/auth-provider";
 import { cn } from "@/lib/utils";
@@ -105,12 +106,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         aria-label="Dashboard sidebar"
       >
         <div className="flex h-16 items-center justify-between border-b px-5">
-          <Link
-            href={ROUTES.app}
-            className="type-heading-sm font-medium tracking-tight"
-          >
-            {APP_NAME}
-          </Link>
+          <Logo href={ROUTES.app} size="sm" />
           <button
             type="button"
             className="text-foreground-muted hover:text-foreground rounded-md p-2 lg:hidden"

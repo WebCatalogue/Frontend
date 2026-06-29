@@ -2,22 +2,40 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { VisualiseWizardDialog } from "./visualise-wizard-dialog";
+import { ROUTES } from "@/constants";
+import { BuilderWizard } from "@/features/builder-wizard";
+import { useBuilderWizard } from "@/features/builder-wizard/context";
 
 interface VisualiseSiteButtonProps {
   variant?: "primary" | "outline" | "ghost";
   size?: "sm" | "md" | "lg";
   className?: string;
-  draftId?: string | null;
+  industryId?: string | null;
 }
 
 export function VisualiseSiteButton({
   variant = "primary",
   size = "lg",
   className,
-  draftId,
+  industryId,
 }: VisualiseSiteButtonProps) {
   const [open, setOpen] = useState(false);
+  const { prepareBuilder } = useBuilderWizard();
+
+  const handleOpen = () => {
+    if (industryId) {
+      prepareBuilder({
+        industryId,
+        returnPath: `/industries/${industryId}`,
+      });
+    } else {
+      prepareBuilder({
+        industryId: null,
+        returnPath: ROUTES.visualise,
+      });
+    }
+    setOpen(true);
+  };
 
   return (
     <>
@@ -25,15 +43,11 @@ export function VisualiseSiteButton({
         variant={variant}
         size={size}
         className={className}
-        onClick={() => setOpen(true)}
+        onClick={handleOpen}
       >
         Visualise Your Site
       </Button>
-      <VisualiseWizardDialog
-        open={open}
-        onOpenChange={setOpen}
-        initialDraftId={draftId}
-      />
+      <BuilderWizard open={open} onOpenChange={setOpen} />
     </>
   );
 }

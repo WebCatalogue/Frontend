@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { ThemeToggle } from "@/components/shared";
+import { Logo } from "@/components/brand";
 import { Button } from "@/components/ui";
-import { APP_NAME, ROUTES } from "@/constants";
+import { ROUTES } from "@/constants";
 import { useIsMobile } from "@/hooks/use-media-query";
 import { MAIN_NAV } from "@/mock/navigation";
 import { cn } from "@/lib/utils";
@@ -68,19 +69,7 @@ function NavbarInner({
 }: NavbarInnerProps) {
   return (
     <>
-      <Link
-        href={ROUTES.home}
-        className="group flex shrink-0 items-center gap-2.5"
-      >
-        <div className="bg-primary flex size-7 items-center justify-center rounded-full shadow-sm transition-shadow group-hover:shadow-md sm:size-8">
-          <span className="type-label text-primary-foreground !text-[0.5rem] sm:!text-[0.5625rem]">
-            A
-          </span>
-        </div>
-        <span className="type-body-sm text-foreground font-medium tracking-tight">
-          {APP_NAME}
-        </span>
-      </Link>
+      <Logo href={ROUTES.home} size="sm" />
 
       <nav
         className="hidden items-center gap-1 lg:flex"

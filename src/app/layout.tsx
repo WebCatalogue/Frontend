@@ -31,10 +31,22 @@ export const metadata: Metadata = {
     template: `%s | ${APP_NAME}`,
   },
   description: APP_DESCRIPTION,
+  icons: {
+    icon: [
+      { url: "/brand/logo-dark.png", type: "image/png" },
+      {
+        url: "/brand/logo-light.png",
+        type: "image/png",
+        media: "(prefers-color-scheme: light)",
+      },
+    ],
+    apple: "/brand/logo-dark.png",
+  },
   openGraph: {
     title: APP_NAME,
     description: APP_DESCRIPTION,
     type: "website",
+    images: [{ url: "/brand/logo-dark.png", width: 512, height: 512 }],
   },
 };
 

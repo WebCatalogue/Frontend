@@ -327,6 +327,7 @@ export interface UpdateWebsiteConfigRequest {
 
 export interface ApiProjectSummary {
   id: string;
+  name?: string;
   businessName?: string;
   business_name?: string;
   industry?: string;
@@ -534,6 +535,30 @@ export interface CreateProjectRequest {
   deadline?: string;
   priority?: string;
   clientId?: string;
+}
+
+/** Backend POST /api/v1/enquiries body (Zod contract) */
+export type ApiEnquirySource =
+  | "WEBSITE"
+  | "REFERRAL"
+  | "SOCIAL"
+  | "EMAIL"
+  | "PHONE"
+  | "OTHER";
+
+export interface ApiCreateEnquiryRequest {
+  name: string;
+  source: ApiEnquirySource;
+  industry?: string;
+  contactName?: string;
+  contactPhone?: string;
+  contactEmail?: string;
+  notes?: string;
+  estimatedBudget?: string;
+  deadline?: string;
+  priority?: string;
+  themeId?: string;
+  themeName?: string;
 }
 
 export interface UpdateProjectRequest {

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DevCredentialsPanel } from "@/components/auth/dev-credentials-panel";
+import { Logo } from "@/components/brand";
 import { Button, Input, useToast } from "@/components/ui";
 import { APP_NAME, APP_TAGLINE, ROUTES } from "@/constants";
 import { getErrorMessage } from "@/lib/errors/api-error";
@@ -66,10 +67,11 @@ export default function LoginPage() {
   return (
     <div className="bg-background flex min-h-screen items-center justify-center p-6">
       <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
+        <div className="mb-8 flex flex-col items-center text-center">
+          <Logo href={ROUTES.home} size="lg" showWordmark={false} />
           <Link
             href={ROUTES.home}
-            className="type-heading-md text-foreground inline-block font-medium"
+            className="type-heading-md text-foreground mt-4 inline-block font-medium"
           >
             {APP_NAME}
           </Link>

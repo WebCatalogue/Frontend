@@ -11,4 +11,3 @@ export {
   getDefaultSelections,
   buildComposeSections,
 } from "./catalog";
-export { IndustryMarketplace } from "./industry-marketplace";

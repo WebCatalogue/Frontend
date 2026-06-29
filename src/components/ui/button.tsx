@@ -11,7 +11,7 @@ const buttonVariants = cva(
     "transition-all duration-500 ease-[var(--ease-out-expo)]",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     "disabled:pointer-events-none disabled:opacity-40",
-    "[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+    "[&_svg]:pointer-events-none [&_svg]:inline-block [&_svg]:size-4 [&_svg]:shrink-0",
     "active:scale-[0.97]",
   ].join(" "),
   {
@@ -100,7 +100,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             {isLoading && (
               <Spinner size="sm" variant="white" className="absolute" />
             )}
-            <span className={cn("relative z-10", isLoading && "opacity-0")}>
+            <span
+              className={cn(
+                "relative z-10 inline-flex items-center justify-center gap-2",
+                isLoading && "opacity-0",
+              )}
+            >
               {children}
             </span>
           </>

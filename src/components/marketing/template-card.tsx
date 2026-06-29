@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Check, Eye, Sparkles } from "lucide-react";
+import { Check, Eye } from "lucide-react";
 import { DemoImage } from "@/components/marketing/demo-image";
 import { ColorSwatches } from "@/components/marketing/color-swatches";
 import { Badge, Button } from "@/components/ui";
-import { ROUTES } from "@/constants";
 import { getTheme } from "@/features/platform/themes";
 import type { IndustryTemplate } from "@/mock/industry-templates";
 import { cn } from "@/lib/utils";
@@ -110,10 +109,7 @@ export function TemplateCard({
             Preview
           </Button>
           <Button variant="primary" className="flex-1" asChild>
-            <Link href={ROUTES.visualise}>
-              <Sparkles className="size-4" aria-hidden />
-              Visualise
-            </Link>
+            <Link href={`/industries/${_industrySlug}`}>View industry</Link>
           </Button>
         </div>
       </div>

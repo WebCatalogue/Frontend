@@ -18,8 +18,8 @@ export default function VisualisePage() {
     >
       <div className="visualise-cta-panel depth-panel mt-8 space-y-6 p-6 sm:mt-10 sm:p-8">
         <p className="type-body-lg text-foreground-muted max-w-xl">
-          Our guided wizard walks you through industry, style, and layout
-          choices with a live preview at every step.
+          Our guided builder walks you through industry, style, sections, and
+          templates with a live preview at every step.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <VisualiseSiteButton size="lg" />

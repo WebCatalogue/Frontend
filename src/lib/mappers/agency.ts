@@ -62,7 +62,23 @@ function mapKanbanColumn(value?: string | null): KanbanColumn | undefined {
 }
 
 function mapProjectSource(value?: string): ProjectSource {
-  return (value ?? "website") as ProjectSource;
+  if (!value) return "website";
+
+  const normalized = value.toUpperCase();
+  const apiToFrontend: Record<string, ProjectSource> = {
+    WEBSITE: "website",
+    REFERRAL: "referral",
+    SOCIAL: "instagram",
+    EMAIL: "website",
+    PHONE: "phone-call",
+    OTHER: "walk-in",
+  };
+
+  if (apiToFrontend[normalized]) {
+    return apiToFrontend[normalized];
+  }
+
+  return value.toLowerCase() as ProjectSource;
 }
 
 function mapProjectPriority(value?: string): ProjectPriority {
@@ -171,7 +187,8 @@ export function mapProjectSummary(
   return {
     id,
     businessName:
-      pickField<string>(record, "businessName", "business_name") ?? "Untitled",
+      pickField<string>(record, "businessName", "business_name", "name") ??
+      "Untitled",
     industry: summary.industry ?? "general",
     status: mapProjectStatus(summary.status),
     kanbanColumn: mapKanbanColumn(

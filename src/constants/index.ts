@@ -3,6 +3,11 @@ export const APP_TAGLINE = "Premium websites, built effortlessly.";
 export const APP_DESCRIPTION =
   "Allow businesses to create premium websites by combining reusable components, themes and templates.";
 
+export const BRAND_ASSETS = {
+  logoDark: "/brand/logo-dark.png",
+  logoLight: "/brand/logo-light.png",
+} as const;
+
 export const COMPANY_EMAIL = "bhaikisite@gmail.com";
 export const COMPANY_PHONES = ["8527503955", "9354698918"] as const;
 export const COMPANY_PHONE = COMPANY_PHONES[0];
