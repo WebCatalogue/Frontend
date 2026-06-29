@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import {
   FileImage,
   FileText,
@@ -9,7 +10,13 @@ import {
   Upload,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 import { ContributorAvatar } from "./contributor-avatar";
+import {
+  useAddProjectAttachment,
+  useDeleteProjectAttachment,
+} from "@/hooks/use-agency-queries";
+import { useUploadMedia } from "@/hooks/use-api-queries";
 import type { ProjectAttachment } from "@/types/agency";
 
 const TYPE_ICONS: Record<ProjectAttachment["type"], typeof FileText> = {
@@ -23,15 +30,58 @@ const TYPE_ICONS: Record<ProjectAttachment["type"], typeof FileText> = {
 };
 
 interface ProjectFilesProps {
+  projectId: string;
   attachments: ProjectAttachment[];
 }
 
-export function ProjectFiles({ attachments }: ProjectFilesProps) {
+export function ProjectFiles({ projectId, attachments }: ProjectFilesProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const uploadMedia = useUploadMedia();
+  const addAttachment = useAddProjectAttachment(projectId);
+  const deleteAttachment = useDeleteProjectAttachment(projectId);
+  const { addToast } = useToast();
+
+  async function handleUpload(file: File) {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const media = await uploadMedia.mutateAsync(formData);
+      await addAttachment.mutateAsync({
+        mediaId: media.id,
+        name: media.filename ?? file.name,
+        type: file.type.startsWith("image/") ? "image" : "other",
+      });
+      addToast({ title: "File uploaded", variant: "success" });
+    } catch {
+      addToast({
+        title: "Upload failed",
+        description: "Could not upload this file. Please try again.",
+        variant: "error",
+      });
+    }
+  }
+
   return (
     <div className="space-y-4">
-      <Button variant="outline" size="sm" className="gap-2">
+      <input
+        ref={inputRef}
+        type="file"
+        className="hidden"
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          if (file) void handleUpload(file);
+          event.target.value = "";
+        }}
+      />
+      <Button
+        variant="outline"
+        size="sm"
+        className="gap-2"
+        onClick={() => inputRef.current?.click()}
+        isLoading={uploadMedia.isPending || addAttachment.isPending}
+      >
         <Upload className="size-4" />
-        Upload file (mock)
+        Upload file
       </Button>
 
       <div className="grid gap-3 sm:grid-cols-2">
@@ -51,6 +101,14 @@ export function ProjectFiles({ attachments }: ProjectFilesProps) {
                   {file.size} · <ContributorAvatar name={file.uploadedBy} />
                 </p>
               </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => void deleteAttachment.mutateAsync(file.id)}
+                isLoading={deleteAttachment.isPending}
+              >
+                Remove
+              </Button>
             </div>
           );
         })}

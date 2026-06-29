@@ -14,7 +14,9 @@ import {
   ProjectTimeline,
 } from "@/features/agency/components";
 import { useAgencyStore } from "@/features/agency";
+import { useProjectDetail } from "@/hooks/use-agency-queries";
 import { ListSkeleton } from "@/components/shared/list-skeleton";
+import { QueryErrorState } from "@/components/shared/query-state";
 
 export default function ProjectDetailPage({
   params,
@@ -22,12 +24,29 @@ export default function ProjectDetailPage({
   params: Promise<{ projectId: string }>;
 }) {
   const { projectId } = use(params);
-  const { getProject, isLoading, toggleChecklist, addNote, getClient } =
-    useAgencyStore();
+  const {
+    getProject,
+    isLoading: storeLoading,
+    toggleChecklist,
+    addNote,
+    getClient,
+  } = useAgencyStore();
+  const projectQuery = useProjectDetail(projectId);
 
+  const isLoading = storeLoading || projectQuery.isLoading;
   if (isLoading) return <ListSkeleton rows={6} />;
 
-  const project = getProject(projectId);
+  if (projectQuery.error) {
+    return (
+      <QueryErrorState
+        error={projectQuery.error}
+        onRetry={() => void projectQuery.refetch()}
+        isRetrying={projectQuery.isFetching}
+      />
+    );
+  }
+
+  const project = projectQuery.data ?? getProject(projectId);
   if (!project) notFound();
 
   const client = project.clientId ? getClient(project.clientId) : undefined;
@@ -138,7 +157,10 @@ export default function ProjectDetailPage({
               value="files"
               className="surface-2 border-border mt-4 rounded-[var(--radius-2xl)] border p-6"
             >
-              <ProjectFiles attachments={project.attachments} />
+              <ProjectFiles
+                projectId={project.id}
+                attachments={project.attachments}
+              />
             </TabsContent>
             <TabsContent
               value="activity"

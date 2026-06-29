@@ -1,24 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { fetchAnalytics } from "@/services/agency";
-import type { AnalyticsData } from "@/types/agency";
+import { useDashboardAnalytics } from "@/hooks/use-agency-queries";
 import { getStatusLabel } from "@/features/agency/components";
 import { CardGridSkeleton } from "@/components/shared/list-skeleton";
+import { QueryErrorState } from "@/components/shared/query-state";
 
 export default function AnalyticsPage() {
-  const [data, setData] = useState<AnalyticsData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const analyticsQuery = useDashboardAnalytics();
 
-  useEffect(() => {
-    void fetchAnalytics().then((d) => {
-      setData(d);
-      setLoading(false);
-    });
-  }, []);
+  if (analyticsQuery.isLoading) return <CardGridSkeleton count={4} />;
 
-  if (loading) return <CardGridSkeleton count={4} />;
+  if (analyticsQuery.error) {
+    return (
+      <QueryErrorState
+        error={analyticsQuery.error}
+        onRetry={() => void analyticsQuery.refetch()}
+        isRetrying={analyticsQuery.isFetching}
+      />
+    );
+  }
+
+  const data = analyticsQuery.data;
 
   return (
     <div className="space-y-10">
@@ -28,7 +31,7 @@ export default function AnalyticsPage() {
           Analytics
         </h1>
         <p className="type-body-sm text-foreground-muted mt-2">
-          Agency performance — mock data for planning.
+          Agency performance across projects, industries, and lead sources.
         </p>
       </header>
 

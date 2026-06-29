@@ -6,7 +6,7 @@ import { PageHeader, PageSection } from "@/components/layout";
 import { Button, Input, Textarea, useToast } from "@/components/ui";
 import { INDUSTRY_PRESETS } from "@/features/platform/industry-presets";
 import { ROUTES } from "@/constants";
-import { submitPublicEnquiry } from "@/services/enquiry-storage";
+import { useSubmitEnquiry } from "@/hooks/use-agency-queries";
 import type { ProjectPriority, ProjectSource } from "@/types/agency";
 
 const SOURCES: { value: ProjectSource; label: string }[] = [
@@ -22,6 +22,7 @@ const selectClass =
 
 export default function EnquiryPage() {
   const { addToast } = useToast();
+  const submitEnquiry = useSubmitEnquiry();
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [industry, setIndustry] = useState("cafe");
@@ -34,7 +35,7 @@ export default function EnquiryPage() {
     setSubmitting(true);
 
     try {
-      submitPublicEnquiry({
+      await submitEnquiry.mutateAsync({
         businessName: String(form.get("businessName") ?? ""),
         industry,
         source,

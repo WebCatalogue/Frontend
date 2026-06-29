@@ -1,9 +1,6 @@
-import type { BuilderComponentDefinition } from "@/types/api";
+import type { BuilderComponentDefinition, RegistryAsset } from "@/types/api";
 import { EFFECT_KEYS } from "@/features/builder/effects";
-import { INDUSTRY_TEMPLATES } from "@/mock/industry-templates";
 import { EFFECT_CATALOGUE, enrichCatalogue } from "../catalogue-meta";
-import { PALETTES } from "../palettes";
-import { PLATFORM_THEMES } from "../themes";
 import type { PlatformAsset } from "./types";
 
 const TYPOGRAPHY_ASSETS: PlatformAsset[] = [
@@ -152,77 +149,80 @@ function backgroundsToAssets(): PlatformAsset[] {
   );
 }
 
-function themesToAssets(): PlatformAsset[] {
-  return PLATFORM_THEMES.map((t) => ({
-    id: `theme-${t.id}`,
-    kind: "theme" as const,
-    entityId: t.id,
-    name: t.name,
-    category: "theme",
-    description: t.description,
-    version: "1.0",
+function registryToAssets(
+  items: RegistryAsset[],
+  kind: PlatformAsset["kind"],
+): PlatformAsset[] {
+  return items.map((item) => ({
+    id: `${kind}-${item.id}`,
+    kind,
+    entityId: item.id,
+    registryKey: item.id,
+    name: item.name,
+    category: String(item.metadata?.category ?? item.kind ?? kind),
+    description: item.description ?? "",
+    version: item.version ?? "1.0",
     source: "custom" as const,
-    supportedIndustries: t.industryTags,
-    supportedThemes: [t.id],
+    supportedIndustries: Array.isArray(item.metadata?.industries)
+      ? (item.metadata?.industries as string[])
+      : [],
+    supportedThemes: Array.isArray(item.metadata?.themes)
+      ? (item.metadata?.themes as string[])
+      : [],
     performance: "light" as const,
     accessibility: "aa" as const,
-    tags: t.industryTags,
-    previewGradient: t.previewGradient,
+    tags: Array.isArray(item.metadata?.tags)
+      ? (item.metadata?.tags as string[])
+      : [item.id],
+    previewGradient:
+      typeof item.metadata?.previewGradient === "string"
+        ? item.metadata.previewGradient
+        : "linear-gradient(135deg, #1C1917 0%, #525252 100%)",
+    desktopPreview:
+      typeof item.metadata?.desktopImage === "string"
+        ? item.metadata.desktopImage
+        : undefined,
+    mobilePreview:
+      typeof item.metadata?.mobileImage === "string"
+        ? item.metadata.mobileImage
+        : undefined,
   }));
 }
 
-function palettesToAssets(): PlatformAsset[] {
-  return PALETTES.map((p) => ({
-    id: `palette-${p.id}`,
-    kind: "palette" as const,
-    entityId: p.id,
-    name: p.name,
-    category: "palette",
-    description: `${p.name} colour system for buttons, links, and surfaces.`,
-    version: "1.0",
-    source: "custom" as const,
-    supportedIndustries: [],
-    supportedThemes: PLATFORM_THEMES.filter((t) =>
-      t.supportedPalettes.includes(p.id),
-    ).map((t) => t.id),
-    performance: "light" as const,
-    accessibility: "aa" as const,
-    tags: [p.id, "color"],
-    previewGradient: `linear-gradient(135deg, ${p.primary} 0%, ${p.accent} 100%)`,
-  }));
-}
-
-function templatesToAssets(): PlatformAsset[] {
-  return INDUSTRY_TEMPLATES.map((t) => ({
-    id: `template-${t.id}`,
-    kind: "template" as const,
-    entityId: t.id,
-    name: t.name,
-    category: t.industrySlug,
-    description: t.description,
-    version: "1.0",
-    source: "custom" as const,
-    supportedIndustries: [t.industrySlug],
-    supportedThemes: [t.themeId],
-    performance: "moderate" as const,
-    accessibility: "aa" as const,
-    tags: [t.industrySlug, t.themeId, t.paletteId],
-    previewGradient: "linear-gradient(135deg, #1C1917 0%, #525252 100%)",
-    desktopPreview: t.desktopImage,
-    mobilePreview: t.mobileImage,
-  }));
+export interface PlatformRegistriesInput {
+  templates?: RegistryAsset[];
+  themes?: RegistryAsset[];
+  palettes?: RegistryAsset[];
+  effects?: RegistryAsset[];
+  typography?: RegistryAsset[];
+  industries?: RegistryAsset[];
 }
 
 export function buildAssetRegistry(
   components: BuilderComponentDefinition[],
+  registries: PlatformRegistriesInput = {},
 ): PlatformAsset[] {
+  const apiEffects = registries.effects ?? [];
+  const effectAssets =
+    apiEffects.length > 0
+      ? registryToAssets(apiEffects, "effect")
+      : effectsToAssets();
+
   return [
     ...componentsToAssets(components),
-    ...templatesToAssets(),
-    ...themesToAssets(),
-    ...effectsToAssets(),
-    ...backgroundsToAssets(),
-    ...palettesToAssets(),
+    ...registryToAssets(registries.templates ?? [], "template"),
+    ...registryToAssets(registries.themes ?? [], "theme"),
+    ...registryToAssets(registries.palettes ?? [], "palette"),
+    ...effectAssets,
+    ...(apiEffects.length > 0
+      ? registryToAssets(
+          apiEffects.filter(
+            (item) => item.metadata?.category === "backgrounds",
+          ),
+          "background",
+        )
+      : backgroundsToAssets()),
+    ...registryToAssets(registries.typography ?? [], "typography"),
     ...TYPOGRAPHY_ASSETS,
     ...ICON_ASSETS,
   ];

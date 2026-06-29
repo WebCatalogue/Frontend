@@ -322,3 +322,246 @@ export interface UpdateWebsiteConfigRequest {
   theme?: Record<string, unknown>;
   settings?: Record<string, unknown>;
 }
+
+// ── Agency / CRM API types ────────────────────────────────
+
+export interface ApiProjectSummary {
+  id: string;
+  businessName?: string;
+  business_name?: string;
+  industry?: string;
+  status?: string;
+  kanbanColumn?: string;
+  kanban_column?: string;
+  source?: string;
+  priority?: string;
+  submittedAt?: string;
+  submitted_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
+  deadline?: string | null;
+  estimatedBudget?: string | null;
+  estimated_budget?: string | null;
+  contactName?: string;
+  contact_name?: string;
+  contactPhone?: string;
+  contact_phone?: string;
+  contactEmail?: string;
+  contact_email?: string;
+  notes?: string | null;
+  clientId?: string | null;
+  client_id?: string | null;
+}
+
+export interface ApiChecklistItem {
+  id: string;
+  label: string;
+  completed: boolean;
+  completedBy?: string | null;
+  completed_by?: string | null;
+  completedAt?: string | null;
+  completed_at?: string | null;
+}
+
+export interface ApiTimelineEvent {
+  id: string;
+  projectId?: string;
+  project_id?: string;
+  type?: string;
+  message: string;
+  contributor?: string | null;
+  timestamp: string;
+}
+
+export interface ApiProjectNote {
+  id: string;
+  projectId?: string;
+  project_id?: string;
+  content: string;
+  contributor?: string;
+  createdAt?: string;
+  created_at?: string;
+}
+
+export interface ApiProjectAttachment {
+  id: string;
+  projectId?: string;
+  project_id?: string;
+  name: string;
+  type?: string;
+  size?: string | number;
+  uploadedBy?: string;
+  uploaded_by?: string;
+  uploadedAt?: string;
+  uploaded_at?: string;
+  url?: string | null;
+}
+
+export interface ApiProjectDraft {
+  themeId?: string;
+  theme_id?: string;
+  themeName?: string;
+  theme_name?: string;
+  paletteId?: string;
+  palette_id?: string;
+  industryId?: string;
+  industry_id?: string;
+  sections?: string[];
+  previewThumbnail?: string;
+  preview_thumbnail?: string;
+}
+
+export interface ApiProjectDetail {
+  overview?: ApiProjectSummary;
+  project?: ApiProjectSummary;
+  checklist?: ApiChecklistItem[];
+  activities?: ApiTimelineEvent[];
+  timeline?: ApiTimelineEvent[];
+  notes?: ApiProjectNote[];
+  projectNotes?: ApiProjectNote[];
+  attachments?: ApiProjectAttachment[];
+  websiteDraft?: ApiProjectDraft;
+  draft?: ApiProjectDraft;
+  website?: ApiProjectDraft;
+}
+
+export interface ApiClient {
+  id: string;
+  businessName?: string;
+  business_name?: string;
+  ownerName?: string;
+  owner_name?: string;
+  phone?: string;
+  email?: string;
+  industry?: string;
+  website?: string | null;
+  projectStatus?: string;
+  project_status?: string;
+  currentPlan?: string | null;
+  current_plan?: string | null;
+  lastContact?: string;
+  last_contact?: string;
+  notes?: string | null;
+  projectsCount?: number;
+  projects_count?: number;
+  createdAt?: string;
+  created_at?: string;
+}
+
+export interface ApiDashboardSummary {
+  newEnquiries?: number;
+  new_enquiries?: number;
+  projectsInProgress?: number;
+  projects_in_progress?: number;
+  completedThisMonth?: number;
+  completed_this_month?: number;
+  maintenanceClients?: number;
+  maintenance_clients?: number;
+  revenue?: string;
+  revenuePlaceholder?: string;
+  revenue_placeholder?: string;
+}
+
+export interface ApiActivityItem {
+  id: string;
+  message: string;
+  contributor?: string;
+  projectId?: string;
+  project_id?: string;
+  projectName?: string;
+  project_name?: string;
+  timestamp: string;
+  type?: string;
+}
+
+export interface ApiCalendarEvent {
+  id: string;
+  title: string;
+  date: string;
+  time?: string | null;
+  type?: string;
+  projectId?: string;
+  project_id?: string;
+  clientName?: string;
+  client_name?: string;
+}
+
+export interface ApiAnalyticsSummary {
+  projectsByIndustry?: { industry: string; count: number }[];
+  projects_by_industry?: { industry: string; count: number }[];
+  projectsByStatus?: { status: string; count: number }[];
+  projects_by_status?: { status: string; count: number }[];
+  monthlyCompletions?: { month: string; count: number }[];
+  monthly_completions?: { month: string; count: number }[];
+  leadSources?: { source: string; count: number }[];
+  lead_sources?: { source: string; count: number }[];
+  averageDeliveryDays?: number;
+  average_delivery_days?: number;
+  revenue?: string;
+  revenuePlaceholder?: string;
+  revenue_placeholder?: string;
+}
+
+export interface ApiNotification {
+  id: string;
+  title: string;
+  message?: string;
+  read?: boolean;
+  createdAt?: string;
+  created_at?: string;
+  type?: string;
+}
+
+export interface ApiSettings {
+  team?: { name: string; role: string; email: string }[];
+  notifications?: {
+    email?: boolean;
+    whatsapp?: boolean;
+    newEnquiries?: boolean;
+    new_enquiries?: boolean;
+  };
+}
+
+export interface CreateProjectRequest {
+  businessName: string;
+  industry: string;
+  source: string;
+  contactName: string;
+  contactPhone: string;
+  contactEmail: string;
+  notes?: string;
+  estimatedBudget?: string;
+  deadline?: string;
+  priority?: string;
+  clientId?: string;
+}
+
+export interface UpdateProjectRequest {
+  status?: string;
+  kanbanColumn?: string;
+  priority?: string;
+  notes?: string;
+  estimatedBudget?: string;
+  deadline?: string;
+}
+
+export interface CreateEnquiryRequest extends CreateProjectRequest {
+  themeId?: string;
+  themeName?: string;
+}
+
+export interface CreateProjectNoteRequest {
+  content: string;
+  contributor?: string;
+}
+
+export interface UpdateChecklistItemRequest {
+  completed: boolean;
+  contributor?: string;
+}
+
+export interface CreateProjectAttachmentRequest {
+  mediaId: string;
+  type?: string;
+  name?: string;
+}

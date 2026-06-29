@@ -4,26 +4,29 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
   type ReactNode,
 } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
-  createDefaultChecklist,
-  fetchClients,
-  fetchProjects,
-} from "@/services/agency";
+  contributorPayload,
+  toCreateProjectRequest,
+  useClients,
+  useCreateProject,
+  useDeleteProject,
+  useProjects,
+} from "@/hooks/use-agency-queries";
+import * as projectsApi from "@/lib/api/projects";
+import { queryKeys } from "@/lib/query/keys";
 import type {
   AgencyProject,
-  ChecklistItem,
   Client,
   Contributor,
   CreateProjectInput,
   KanbanColumn,
-  ProjectNote,
   ProjectStatus,
 } from "@/types/agency";
+import type { UpdateProjectRequest } from "@/types/api";
 
 interface AgencyStoreState {
   projects: AgencyProject[];
@@ -60,182 +63,112 @@ const KANBAN_TO_STATUS: Record<KanbanColumn, ProjectStatus> = {
 };
 
 export function AgencyStoreProvider({ children }: { children: ReactNode }) {
-  const [projects, setProjects] = useState<AgencyProject[]>([]);
-  const [clients, setClients] = useState<Client[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const qc = useQueryClient();
+  const projectsQuery = useProjects();
+  const clientsQuery = useClients();
+  const createProjectMutation = useCreateProject();
+  const deleteProjectMutation = useDeleteProject();
 
-  useEffect(() => {
-    void (async () => {
-      const [p, c] = await Promise.all([fetchProjects(), fetchClients()]);
-      const { getStoredEnquiries } = await import("@/services/enquiry-storage");
-      const stored = getStoredEnquiries();
-      const merged = [
-        ...stored,
-        ...p.filter((mock) => !stored.some((s) => s.id === mock.id)),
-      ];
-      setProjects(merged);
-      setClients(c);
-      setIsLoading(false);
-    })();
-  }, []);
+  const projects = useMemo(
+    () => projectsQuery.data ?? [],
+    [projectsQuery.data],
+  );
+  const clients = useMemo(() => clientsQuery.data ?? [], [clientsQuery.data]);
+  const isLoading = projectsQuery.isLoading || clientsQuery.isLoading;
 
-  const addTimeline = useCallback(
-    (
-      projectId: string,
-      message: string,
-      contributor?: Contributor,
-      type: AgencyProject["timeline"][0]["type"] = "general",
-    ) => {
-      setProjects((prev) =>
-        prev.map((p) =>
-          p.id === projectId
-            ? {
-                ...p,
-                updatedAt: new Date().toISOString(),
-                timeline: [
-                  {
-                    id: `tl-${Date.now()}`,
-                    projectId,
-                    type,
-                    message,
-                    contributor,
-                    timestamp: new Date().toISOString(),
-                  },
-                  ...p.timeline,
-                ],
-              }
-            : p,
-        ),
-      );
+  const invalidateProject = useCallback(
+    async (projectId: string) => {
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: queryKeys.agency.projects.all }),
+        qc.invalidateQueries({
+          queryKey: queryKeys.agency.projects.detail(projectId),
+        }),
+        qc.invalidateQueries({
+          queryKey: queryKeys.agency.dashboard.summary,
+        }),
+        qc.invalidateQueries({
+          queryKey: queryKeys.agency.dashboard.activity,
+        }),
+      ]);
     },
-    [],
+    [qc],
+  );
+
+  const patchProject = useCallback(
+    async (projectId: string, payload: UpdateProjectRequest) => {
+      await projectsApi.updateProject(projectId, payload);
+      await invalidateProject(projectId);
+    },
+    [invalidateProject],
   );
 
   const moveToTodo = useCallback(
     (projectId: string) => {
-      setProjects((prev) =>
-        prev.map((p) =>
-          p.id === projectId
-            ? {
-                ...p,
-                status: "our-todo" as ProjectStatus,
-                kanbanColumn: "planning" as KanbanColumn,
-                updatedAt: new Date().toISOString(),
-              }
-            : p,
-        ),
-      );
-      addTimeline(projectId, "Moved to Our To-Do", "Garvit", "status");
+      void patchProject(projectId, {
+        status: "our-todo",
+        kanbanColumn: "planning",
+      });
     },
-    [addTimeline],
+    [patchProject],
   );
 
-  const deleteProject = useCallback((projectId: string) => {
-    setProjects((prev) => prev.filter((p) => p.id !== projectId));
-  }, []);
+  const deleteProject = useCallback(
+    (projectId: string) => {
+      void deleteProjectMutation.mutateAsync(projectId);
+    },
+    [deleteProjectMutation],
+  );
 
   const updateProjectStatus = useCallback(
     (projectId: string, status: ProjectStatus) => {
-      setProjects((prev) =>
-        prev.map((p) =>
-          p.id === projectId
-            ? { ...p, status, updatedAt: new Date().toISOString() }
-            : p,
-        ),
-      );
-      addTimeline(projectId, `Status updated to ${status}`, "Garvit", "status");
+      void patchProject(projectId, { status });
     },
-    [addTimeline],
+    [patchProject],
   );
 
   const moveKanban = useCallback(
     (projectId: string, column: KanbanColumn) => {
-      const status = KANBAN_TO_STATUS[column];
-      setProjects((prev) =>
-        prev.map((p) =>
-          p.id === projectId
-            ? {
-                ...p,
-                kanbanColumn: column,
-                status,
-                updatedAt: new Date().toISOString(),
-              }
-            : p,
-        ),
-      );
-      addTimeline(
-        projectId,
-        `Moved to ${column.charAt(0).toUpperCase() + column.slice(1)}`,
-        "Garvit",
-        "status",
-      );
+      void patchProject(projectId, {
+        kanbanColumn: column,
+        status: KANBAN_TO_STATUS[column],
+      });
     },
-    [addTimeline],
+    [patchProject],
   );
 
   const toggleChecklist = useCallback(
     (projectId: string, itemId: string, contributor: Contributor) => {
-      setProjects((prev) =>
-        prev.map((p) => {
-          if (p.id !== projectId) return p;
-          const checklist = p.checklist.map((item) => {
-            if (item.id !== itemId) return item;
-            const completed = !item.completed;
-            return {
-              ...item,
-              completed,
-              completedBy: completed ? contributor : undefined,
-              completedAt: completed ? new Date().toISOString() : undefined,
-            } satisfies ChecklistItem;
-          });
-          const toggled = checklist.find((c) => c.id === itemId);
-          if (toggled?.completed) {
-            setTimeout(() => {
-              addTimeline(
-                projectId,
-                `${toggled.label} completed`,
-                contributor,
-                "checklist",
-              );
-            }, 0);
-          }
-          return { ...p, checklist, updatedAt: new Date().toISOString() };
-        }),
-      );
+      const project = projects.find((p) => p.id === projectId);
+      const item = project?.checklist.find((c) => c.id === itemId);
+      if (!item) return;
+      void (async () => {
+        await projectsApi.updateChecklistItem(projectId, itemId, {
+          completed: !item.completed,
+          ...contributorPayload(contributor),
+        });
+        await invalidateProject(projectId);
+      })();
     },
-    [addTimeline],
+    [invalidateProject, projects],
   );
 
   const addNote = useCallback(
     (projectId: string, content: string, contributor: Contributor) => {
-      const note: ProjectNote = {
-        id: `note-${Date.now()}`,
-        projectId,
-        content,
-        contributor,
-        createdAt: new Date().toISOString(),
-      };
-      setProjects((prev) =>
-        prev.map((p) =>
-          p.id === projectId
-            ? {
-                ...p,
-                projectNotes: [note, ...p.projectNotes],
-                updatedAt: new Date().toISOString(),
-              }
-            : p,
-        ),
-      );
-      addTimeline(projectId, "Note added", contributor, "note");
+      void (async () => {
+        await projectsApi.addProjectNote(projectId, {
+          content,
+          ...contributorPayload(contributor),
+        });
+        await invalidateProject(projectId);
+      })();
     },
-    [addTimeline],
+    [invalidateProject],
   );
 
   const createProject = useCallback(
     (input: CreateProjectInput): AgencyProject => {
-      const id = `proj-${Date.now()}`;
-      const project: AgencyProject = {
-        id,
+      const optimistic: AgencyProject = {
+        id: `temp-${Date.now()}`,
         businessName: input.businessName,
         industry: input.industry,
         status: "new-enquiry",
@@ -249,24 +182,15 @@ export function AgencyStoreProvider({ children }: { children: ReactNode }) {
         contactPhone: input.contactPhone,
         contactEmail: input.contactEmail,
         notes: input.notes,
-        checklist: createDefaultChecklist(),
-        timeline: [
-          {
-            id: `tl-${id}-0`,
-            projectId: id,
-            type: "general",
-            message: `Project created via ${input.source}`,
-            contributor: "Garvit",
-            timestamp: new Date().toISOString(),
-          },
-        ],
+        checklist: [],
+        timeline: [],
         projectNotes: [],
         attachments: [],
       };
-      setProjects((prev) => [project, ...prev]);
-      return project;
+      void createProjectMutation.mutateAsync(toCreateProjectRequest(input));
+      return optimistic;
     },
-    [],
+    [createProjectMutation],
   );
 
   const getProject = useCallback(

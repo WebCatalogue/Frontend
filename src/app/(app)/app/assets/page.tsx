@@ -19,7 +19,10 @@ import {
 } from "@/features/platform/assets/types";
 import { LIBRARY_SOURCE_LABELS } from "@/features/platform/catalogue-meta";
 import type { LibrarySource } from "@/features/platform/types";
-import { useComponentRegistry } from "@/hooks/use-api-queries";
+import {
+  useComponentRegistry,
+  usePlatformRegistries,
+} from "@/hooks/use-api-queries";
 import {
   getFavoriteAssetIds,
   getRecentAssetIds,
@@ -28,7 +31,8 @@ import {
 } from "@/lib/asset-preferences";
 
 export default function AssetRegistryPage() {
-  const registryQuery = useComponentRegistry();
+  const registryQuery = usePlatformRegistries();
+  const componentsQuery = useComponentRegistry();
   const [query, setQuery] = useState("");
   const [kind, setKind] = useState<AssetKind | "all">("all");
   const [source, setSource] = useState<LibrarySource | "all">("all");
@@ -44,8 +48,16 @@ export default function AssetRegistryPage() {
   }, []);
 
   const assets = useMemo(
-    () => buildAssetRegistry(registryQuery.data ?? []),
-    [registryQuery.data],
+    () =>
+      buildAssetRegistry(componentsQuery.data ?? [], {
+        templates: registryQuery.data?.templates,
+        themes: registryQuery.data?.themes,
+        palettes: registryQuery.data?.palettes,
+        effects: registryQuery.data?.effects,
+        typography: registryQuery.data?.typography,
+        industries: registryQuery.data?.industries,
+      }),
+    [componentsQuery.data, registryQuery.data],
   );
 
   const filtered = useMemo(
@@ -81,13 +93,20 @@ export default function AssetRegistryPage() {
     setRecentIds(trackRecentAsset(id));
   }, []);
 
-  if (registryQuery.error) {
+  if (componentsQuery.error) {
     return (
       <QueryErrorState
-        error={registryQuery.error}
-        onRetry={() => registryQuery.refetch()}
+        error={componentsQuery.error}
+        onRetry={() => {
+          void componentsQuery.refetch();
+          void registryQuery.refetch();
+        }}
       />
     );
+  }
+
+  if (componentsQuery.isLoading) {
+    return <ListSkeleton rows={8} />;
   }
 
   return (

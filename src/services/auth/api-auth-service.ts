@@ -1,22 +1,72 @@
-import type { AuthService, AuthUser, LoginCredentials } from "./auth-service";
+import * as authApi from "@/lib/api/auth";
+import {
+  clearAuthSession,
+  getRefreshToken,
+  hasAuthSession,
+  saveAuthSession,
+} from "@/lib/auth/session";
+import type { User } from "@/types/api";
+import {
+  AuthError,
+  type AuthService,
+  type AuthUser,
+  type LoginCredentials,
+} from "./auth-service";
 
-const NOT_IMPLEMENTED = "Backend authentication not implemented.";
+function mapUser(user: User): AuthUser {
+  const name =
+    user.name ??
+    ([user.firstName, user.lastName].filter(Boolean).join(" ").trim() ||
+      user.email);
 
-/** Placeholder for Aarush's backend — swap in real API calls when ready. */
+  return {
+    id: user.id,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    name,
+    role: user.role ?? undefined,
+  };
+}
+
 export class ApiAuthService implements AuthService {
-  login(_credentials: LoginCredentials): Promise<AuthUser> {
-    return Promise.reject(new Error(NOT_IMPLEMENTED));
+  async login(credentials: LoginCredentials): Promise<AuthUser> {
+    try {
+      const tokens = await authApi.login(credentials);
+      saveAuthSession(tokens);
+      const user = await authApi.getCurrentUser();
+      return mapUser(user);
+    } catch (error) {
+      clearAuthSession();
+      throw error instanceof AuthError
+        ? error
+        : new AuthError("Invalid credentials");
+    }
   }
 
-  logout(): Promise<void> {
-    return Promise.reject(new Error(NOT_IMPLEMENTED));
+  async logout(): Promise<void> {
+    const refreshToken = getRefreshToken();
+    try {
+      if (refreshToken) {
+        await authApi.logout({ refreshToken });
+      }
+    } finally {
+      clearAuthSession();
+    }
   }
 
-  getCurrentUser(): Promise<AuthUser | null> {
-    return Promise.reject(new Error(NOT_IMPLEMENTED));
+  async getCurrentUser(): Promise<AuthUser | null> {
+    if (!hasAuthSession()) return null;
+    try {
+      const user = await authApi.getCurrentUser();
+      return mapUser(user);
+    } catch {
+      clearAuthSession();
+      return null;
+    }
   }
 
   isAuthenticated(): boolean {
-    return false;
+    return hasAuthSession();
   }
 }

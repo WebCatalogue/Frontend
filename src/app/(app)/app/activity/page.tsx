@@ -1,23 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { ProjectTimeline } from "@/features/agency/components";
-import { fetchRecentActivity } from "@/services/agency";
-import type { ActivityItem } from "@/types/agency";
+import { useDashboardActivity } from "@/hooks/use-agency-queries";
 import { ListSkeleton } from "@/components/shared/list-skeleton";
+import { QueryErrorState } from "@/components/shared/query-state";
 
 export default function ActivityPage() {
-  const [activity, setActivity] = useState<ActivityItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const activityQuery = useDashboardActivity();
 
-  useEffect(() => {
-    void fetchRecentActivity().then((a) => {
-      setActivity(a);
-      setLoading(false);
-    });
-  }, []);
+  if (activityQuery.isLoading) return <ListSkeleton rows={6} />;
 
-  if (loading) return <ListSkeleton rows={6} />;
+  if (activityQuery.error) {
+    return (
+      <QueryErrorState
+        error={activityQuery.error}
+        onRetry={() => void activityQuery.refetch()}
+        isRetrying={activityQuery.isFetching}
+      />
+    );
+  }
+
+  const activity = activityQuery.data ?? [];
 
   return (
     <div className="space-y-8">

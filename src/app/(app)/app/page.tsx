@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -17,6 +17,7 @@ import {
   CardGridSkeleton,
   ListSkeleton,
 } from "@/components/shared/list-skeleton";
+import { QueryErrorState } from "@/components/shared/query-state";
 import {
   NewProjectModal,
   ProjectTimeline,
@@ -24,39 +25,23 @@ import {
 } from "@/features/agency/components";
 import { useAgencyStore } from "@/features/agency";
 import {
-  fetchCalendarEvents,
-  fetchDashboardStats,
-  fetchRecentActivity,
-} from "@/services/agency";
-import type {
-  ActivityItem,
-  CalendarEvent,
-  DashboardStats,
-} from "@/types/agency";
+  useCalendarEvents,
+  useDashboardActivity,
+  useDashboardSummary,
+} from "@/hooks/use-agency-queries";
 import { useToast } from "@/components/ui/toast";
 
 export default function AgencyDashboardPage() {
   const { createProject, projects } = useAgencyStore();
   const { addToast } = useToast();
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [activity, setActivity] = useState<ActivityItem[]>([]);
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [loading, setLoading] = useState(true);
+  const statsQuery = useDashboardSummary();
+  const activityQuery = useDashboardActivity();
+  const eventsQuery = useCalendarEvents();
   const [newProjectOpen, setNewProjectOpen] = useState(false);
 
-  useEffect(() => {
-    void (async () => {
-      const [s, a, e] = await Promise.all([
-        fetchDashboardStats(),
-        fetchRecentActivity(),
-        fetchCalendarEvents(),
-      ]);
-      setStats(s);
-      setActivity(a);
-      setEvents(e);
-      setLoading(false);
-    })();
-  }, [projects]);
+  const loading =
+    statsQuery.isLoading || activityQuery.isLoading || eventsQuery.isLoading;
+  const error = statsQuery.error ?? activityQuery.error ?? eventsQuery.error;
 
   if (loading) {
     return (
@@ -66,6 +51,28 @@ export default function AgencyDashboardPage() {
       </div>
     );
   }
+
+  if (error) {
+    return (
+      <QueryErrorState
+        error={error}
+        onRetry={() => {
+          void statsQuery.refetch();
+          void activityQuery.refetch();
+          void eventsQuery.refetch();
+        }}
+        isRetrying={
+          statsQuery.isFetching ||
+          activityQuery.isFetching ||
+          eventsQuery.isFetching
+        }
+      />
+    );
+  }
+
+  const stats = statsQuery.data;
+  const activity = activityQuery.data ?? [];
+  const events = eventsQuery.data ?? [];
 
   const upcomingDeadlines = events
     .filter((e) => e.type === "deadline")
@@ -118,7 +125,6 @@ export default function AgencyDashboardPage() {
         <StatCard
           label="Revenue"
           value={stats?.revenuePlaceholder ?? "—"}
-          hint="Placeholder"
           icon={IndianRupee}
           gradient="from-amber-500/20 to-amber-500/5"
         />

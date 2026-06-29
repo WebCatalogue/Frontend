@@ -37,4 +37,23 @@ export const queryKeys = {
     collection: (websiteId: string, collection: string) =>
       ["websites", websiteId, "data", collection] as const,
   },
+  agency: {
+    projects: {
+      all: ["agency", "projects"] as const,
+      detail: (id: string) => ["agency", "projects", id] as const,
+    },
+    clients: {
+      all: ["agency", "clients"] as const,
+      detail: (id: string) => ["agency", "clients", id] as const,
+    },
+    enquiries: ["agency", "enquiries"] as const,
+    dashboard: {
+      summary: ["agency", "dashboard", "summary"] as const,
+      activity: ["agency", "dashboard", "activity"] as const,
+      analytics: ["agency", "dashboard", "analytics"] as const,
+    },
+    calendar: ["agency", "calendar"] as const,
+    notifications: ["agency", "notifications"] as const,
+    settings: ["agency", "settings"] as const,
+  },
 } as const;

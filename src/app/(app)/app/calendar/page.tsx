@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Calendar } from "lucide-react";
-import { fetchCalendarEvents } from "@/services/agency";
+import { useCalendarEvents } from "@/hooks/use-agency-queries";
 import type { CalendarEvent } from "@/types/agency";
 import { ListSkeleton } from "@/components/shared/list-skeleton";
+import { QueryErrorState } from "@/components/shared/query-state";
 
 const TYPE_COLORS: Record<CalendarEvent["type"], string> = {
   meeting: "border-l-blue-500",
@@ -15,19 +15,21 @@ const TYPE_COLORS: Record<CalendarEvent["type"], string> = {
 };
 
 export default function CalendarPage() {
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [loading, setLoading] = useState(true);
+  const eventsQuery = useCalendarEvents();
 
-  useEffect(() => {
-    void fetchCalendarEvents().then((e) => {
-      setEvents(e);
-      setLoading(false);
-    });
-  }, []);
+  if (eventsQuery.isLoading) return <ListSkeleton rows={5} />;
 
-  if (loading) return <ListSkeleton rows={5} />;
+  if (eventsQuery.error) {
+    return (
+      <QueryErrorState
+        error={eventsQuery.error}
+        onRetry={() => void eventsQuery.refetch()}
+        isRetrying={eventsQuery.isFetching}
+      />
+    );
+  }
 
-  const sorted = [...events].sort(
+  const sorted = [...(eventsQuery.data ?? [])].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   );
 
