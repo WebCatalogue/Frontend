@@ -1,12 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import {
-  Reveal,
-  staggerContainer,
-} from "@/components/playground/motion/primitives";
+import { Reveal } from "@/components/playground/motion/primitives";
 import {
   Accordion,
   AccordionContent,
@@ -14,83 +10,13 @@ import {
   AccordionTrigger,
   Button,
 } from "@/components/ui";
-import { APP_TAGLINE, ROUTES } from "@/constants";
+import { ROUTES } from "@/constants";
 import { HOME_FAQ, PROCESS_STEPS, TESTIMONIALS, WHY_BHAIKISITE } from "@/mock";
 import { INDUSTRIES } from "@/mock/industries";
 import { PORTFOLIO_PROJECTS } from "@/mock/portfolio";
 import { SERVICES } from "@/mock/services";
 import { DemoImage } from "@/components/marketing/demo-image";
 import { demoImage } from "@/lib/demo-images";
-
-const heroChild = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] as const },
-  },
-};
-
-export function HomeHero() {
-  return (
-    <section className="section-anchor relative overflow-hidden px-5 pt-28 pb-20 sm:min-h-[calc(100svh-3.5rem)] sm:px-6 sm:pt-32 sm:pb-24 lg:px-12 lg:pt-36">
-      <div className="absolute inset-0 bg-[var(--gradient-ambient-base)]" />
-      <div className="relative mx-auto max-w-[var(--container-2xl)]">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.p
-              variants={heroChild}
-              className="section-eyebrow mb-6 sm:mb-8"
-            >
-              Website creation platform
-            </motion.p>
-            <motion.h1
-              variants={heroChild}
-              className="type-display-2xl text-foreground"
-            >
-              {APP_TAGLINE}
-            </motion.h1>
-            <motion.p
-              variants={heroChild}
-              className="type-body-lg text-foreground-muted mt-6 max-w-xl sm:mt-8"
-            >
-              Pick an industry template, customise your theme, and publish a
-              site that looks like you hired a studio — without the six-month
-              wait.
-            </motion.p>
-            <motion.div
-              variants={heroChild}
-              className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center sm:gap-4"
-            >
-              <Button variant="primary" size="lg" asChild>
-                <Link href={ROUTES.industries}>Browse templates</Link>
-              </Button>
-              <Button variant="ghost" size="lg" asChild>
-                <Link href={ROUTES.portfolio}>See our work</Link>
-              </Button>
-            </motion.div>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-2xl)] shadow-2xl"
-          >
-            <DemoImage
-              src={demoImage("cafe", 1400)}
-              alt="BhaiKISite template preview"
-              priority
-            />
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 export function HomeIntro() {
   return (
@@ -123,9 +49,8 @@ export function HomeIntro() {
 
 export function HomeWhy() {
   return (
-    <section className="section-anchor section-pad relative px-5 sm:px-6 lg:px-12">
-      <div className="absolute inset-0 bg-[var(--color-background-subtle)]" />
-      <div className="relative mx-auto max-w-[var(--container-2xl)]">
+    <section className="section-anchor section-pad px-5 sm:px-6 lg:px-12">
+      <div className="mx-auto max-w-[var(--container-2xl)]">
         <Reveal>
           <p className="section-eyebrow mb-6">Why BhaiKISite</p>
           <h2 className="type-display-md text-foreground max-w-lg">
@@ -176,9 +101,9 @@ export function HomeIndustries() {
             <Reveal key={industry.id} delay={i * 0.05}>
               <Link
                 href={`/industries/${industry.slug}`}
-                className="group depth-panel block overflow-hidden transition-transform duration-300 hover:-translate-y-0.5"
+                className="group depth-panel block transition-transform duration-300 hover:-translate-y-0.5"
               >
-                <div className="relative h-28 overflow-hidden sm:h-32">
+                <div className="relative h-28 overflow-hidden rounded-t-[var(--radius-2xl)] sm:h-32">
                   <DemoImage
                     src={industry.image}
                     alt={industry.name}
@@ -206,9 +131,8 @@ export function HomeIndustries() {
 export function HomeShowcase() {
   const featured = PORTFOLIO_PROJECTS.slice(0, 3);
   return (
-    <section className="section-anchor section-pad relative px-5 sm:px-6 lg:px-12">
-      <div className="absolute inset-0 bg-[var(--color-background-subtle)]" />
-      <div className="relative mx-auto max-w-[var(--container-2xl)]">
+    <section className="section-anchor section-pad px-5 sm:px-6 lg:px-12">
+      <div className="mx-auto max-w-[var(--container-2xl)]">
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <Reveal>
             <p className="section-eyebrow mb-6">Portfolio</p>
@@ -227,9 +151,9 @@ export function HomeShowcase() {
             <Reveal key={project.id} delay={i * 0.08}>
               <Link
                 href={`/portfolio/${project.slug}`}
-                className="group depth-panel block overflow-hidden"
+                className="group depth-panel block"
               >
-                <div className="relative h-48 overflow-hidden sm:h-56">
+                <div className="relative h-48 overflow-hidden rounded-t-[var(--radius-2xl)] sm:h-56">
                   <DemoImage
                     src={project.image}
                     alt={project.title}
@@ -289,9 +213,8 @@ export function HomeProcess() {
 export function HomeFeatures() {
   const features = SERVICES.slice(0, 4);
   return (
-    <section className="section-anchor section-pad relative px-5 sm:px-6 lg:px-12">
-      <div className="absolute inset-0 bg-[var(--color-background-subtle)]" />
-      <div className="relative mx-auto max-w-[var(--container-2xl)]">
+    <section className="section-anchor section-pad px-5 sm:px-6 lg:px-12">
+      <div className="mx-auto max-w-[var(--container-2xl)]">
         <Reveal>
           <p className="section-eyebrow mb-6">Services</p>
           <h2 className="type-display-md text-foreground max-w-lg">
@@ -374,9 +297,8 @@ export function HomeTestimonials() {
 
 export function HomeFaq() {
   return (
-    <section className="section-anchor section-pad relative px-5 sm:px-6 lg:px-12">
-      <div className="absolute inset-0 bg-[var(--color-background-subtle)]" />
-      <div className="relative mx-auto max-w-[var(--container-2xl)]">
+    <section className="section-anchor section-pad px-5 sm:px-6 lg:px-12">
+      <div className="mx-auto max-w-[var(--container-2xl)]">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
           <Reveal>
             <p className="section-eyebrow mb-6">FAQ</p>

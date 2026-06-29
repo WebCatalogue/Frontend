@@ -1,8 +1,5 @@
 import { SiteLayout } from "@/components/layout";
-import {
-  AmbientBackground,
-  NoiseOverlay,
-} from "@/components/playground/ambient/ambient-background";
+import { SiteAmbient } from "@/components/marketing/site-ambient";
 
 export default function MarketingLayout({
   children,
@@ -11,8 +8,7 @@ export default function MarketingLayout({
 }) {
   return (
     <>
-      <AmbientBackground />
-      <NoiseOverlay />
+      <SiteAmbient />
       <SiteLayout>{children}</SiteLayout>
     </>
   );

@@ -14,7 +14,9 @@ export function SiteLayout({ children }: SiteLayoutProps) {
     <div className="relative min-h-screen overflow-x-clip">
       <ScrollProgress />
       <Navbar />
-      <main id="main-content">{children}</main>
+      <main id="main-content" className="relative z-[1]">
+        {children}
+      </main>
       <Footer />
       <FloatingContact />
       <CookieBanner />

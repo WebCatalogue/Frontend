@@ -9,6 +9,12 @@ export const MAIN_NAV = [
 ] as const;
 
 export const FOOTER_NAV = {
+  platform: [
+    { label: "Industries", href: ROUTES.industries },
+    { label: "Templates", href: ROUTES.templates },
+    { label: "Visualise", href: ROUTES.visualise },
+    { label: "Contact us", href: ROUTES.contact },
+  ],
   company: [
     { label: "Industries", href: ROUTES.industries },
     { label: "Templates", href: ROUTES.templates },

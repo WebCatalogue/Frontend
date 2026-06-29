@@ -1,8 +1,8 @@
-import { CtaBanner } from "@/components/layout";
+import { HomeBackground } from "@/components/marketing/home-background";
+import { Hero } from "@/features/home/hero";
 import {
   HomeFaq,
   HomeFeatures,
-  HomeHero,
   HomeIndustries,
   HomeIntro,
   HomeProcess,
@@ -13,8 +13,8 @@ import {
 
 export default function HomePage() {
   return (
-    <>
-      <HomeHero />
+    <HomeBackground>
+      <Hero />
       <HomeIntro />
       <HomeWhy />
       <HomeIndustries />
@@ -23,7 +23,6 @@ export default function HomePage() {
       <HomeFeatures />
       <HomeTestimonials />
       <HomeFaq />
-      <CtaBanner />
-    </>
+    </HomeBackground>
   );
 }

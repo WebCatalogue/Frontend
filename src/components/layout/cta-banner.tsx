@@ -11,6 +11,8 @@ interface CtaBannerProps {
   secondaryLabel?: string;
   secondaryHref?: string;
   className?: string;
+  /** Blends into a shared page canvas — no section background or clipping */
+  seamless?: boolean;
 }
 
 export function CtaBanner({
@@ -21,17 +23,27 @@ export function CtaBanner({
   secondaryLabel = "View pricing",
   secondaryHref = ROUTES.pricing,
   className,
+  seamless = false,
 }: CtaBannerProps) {
   return (
     <section
       className={cn(
-        "relative overflow-hidden px-5 py-20 sm:px-6 sm:py-24 lg:px-12",
+        seamless
+          ? "section-anchor section-pad relative px-5 sm:px-6 lg:px-12"
+          : "relative overflow-hidden px-5 py-20 sm:px-6 sm:py-24 lg:px-12",
         className,
       )}
       aria-labelledby="cta-banner-title"
     >
-      <div className="absolute inset-0 bg-[var(--gradient-ambient-base)]" />
-      <div className="relative mx-auto max-w-[var(--container-2xl)]">
+      {!seamless && (
+        <div className="absolute inset-0 bg-[var(--gradient-ambient-base)]" />
+      )}
+      <div
+        className={cn(
+          seamless ? "" : "relative",
+          "mx-auto max-w-[var(--container-2xl)]",
+        )}
+      >
         <div className="depth-panel mx-auto max-w-3xl p-10 text-center sm:p-14">
           <h2 id="cta-banner-title" className="type-display-md text-foreground">
             {title}

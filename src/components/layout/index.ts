@@ -2,6 +2,7 @@ export { SiteLayout } from "./site-layout";
 export { Navbar } from "./navbar";
 export { MegaMenu } from "./mega-menu";
 export { Footer } from "./footer";
+export { FooterCta } from "./footer-cta";
 export { Breadcrumbs } from "./breadcrumbs";
 export { CtaBanner } from "./cta-banner";
 export { CookieBanner } from "./cookie-banner";
